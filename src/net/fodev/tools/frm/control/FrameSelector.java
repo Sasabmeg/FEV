@@ -5,6 +5,8 @@ import net.fodev.tools.frm.model.FrmFrame;
 import net.fodev.tools.frm.model.FrmHeader;
 
 public class FrameSelector {
+	final private static int defaultFramesPerSecond = 8;
+
 	private FrmHeader header;
 	private FrmFrame frame;
 	private int direction = 0;
@@ -107,6 +109,6 @@ public class FrameSelector {
 	}
 
 	public int getFramesPerSecond() {
-		return header.getFramesPerSecond();
+		return header.getFramesPerSecond() > 0 ? header.getFramesPerSecond() : defaultFramesPerSecond;
 	}
 }

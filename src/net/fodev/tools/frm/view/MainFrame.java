@@ -26,6 +26,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -68,6 +69,10 @@ public class MainFrame extends Application {
 	private Image image;
 	private Timeline animation;
 	private boolean autoAnimation = false;
+	private double zoomFactor = 1;
+	private final double minZoomValue = 0.25;
+	private final double maxZoomValue = 5;
+	private final double zoomStep = 1.125;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -85,12 +90,34 @@ public class MainFrame extends Application {
 			addFrameInfoTextArea();
 
 			addKeybinds();
+			addMousebinds();
 
 			showCurrentFrame(true);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void addMousebinds() {
+		scene.setOnScroll(new EventHandler<ScrollEvent>() {
+			@Override
+			public void handle(ScrollEvent event) {
+				double deltaY = event.getDeltaY();
+				if (deltaY < 0) {
+					zoomOut();
+				} else {
+					zoomIn();
+				}
+				System.out.println(zoomFactor);
+				event.consume();
+				try {
+					showCurrentFrame(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	private void setFrameSelector() {
@@ -481,8 +508,8 @@ public class MainFrame extends Application {
 			frameSelector.readHeaderFromFile(fileSelector.getCurrentFile());
 			image = frameSelector.getImage();
 		}
-		double imageWidth = image.getWidth();
-		double imageHeight = image.getHeight();
+		double imageWidth = image.getWidth() * zoomFactor;
+		double imageHeight = image.getHeight() * zoomFactor;
 		double containerWidth = frameViewContainer.getWidth() > 0 ? frameViewContainer.getWidth()
 				: frameViewContainer.getPrefWidth();
 		double containerHeight = frameViewContainer.getHeight() > 0 ? frameViewContainer.getHeight()
@@ -494,6 +521,8 @@ public class MainFrame extends Application {
 		double heightScale = containerHeight / imageHeight;
 		double scale = widthScale < heightScale ? widthScale : heightScale;
 		if (scale < 1) {
+			frameView.setScaleX(1);
+			frameView.setScaleY(1);
 			if (widthScale < heightScale) {
 				frameView.setFitWidth(containerWidth);
 			} else {
@@ -502,6 +531,8 @@ public class MainFrame extends Application {
 		} else {
 			frameView.setFitWidth(0);
 			frameView.setFitHeight(0);
+			frameView.setScaleX(zoomFactor);
+			frameView.setScaleY(zoomFactor);
 		}
 
 		frameView.setImage(image);
@@ -607,15 +638,15 @@ public class MainFrame extends Application {
 			stopAnimation();
 		} else {
 			try {
-			Image[] images = frameSelector.getImagesForAnimation();
-			animation = new Timeline();
-			int duration = 1000 / frameSelector.getFramesPerSecond();
-			for (int i = 0; i < frameSelector.getFramesPerDirection(); i++) {
-				animation.getKeyFrames().add(new KeyFrame(Duration.millis(i * duration),
-						new KeyValue(frameView.imageProperty(), images[i])));
-			}
-			animation.setCycleCount(Timeline.INDEFINITE);
-			animation.play();
+				Image[] images = frameSelector.getImagesForAnimation();
+				animation = new Timeline();
+				int duration = 1000 / frameSelector.getFramesPerSecond();
+				for (int i = 0; i < frameSelector.getFramesPerDirection(); i++) {
+					animation.getKeyFrames().add(new KeyFrame(Duration.millis(i * duration),
+							new KeyValue(frameView.imageProperty(), images[i])));
+				}
+				animation.setCycleCount(Timeline.INDEFINITE);
+				animation.play();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				animation.stop();
@@ -635,6 +666,29 @@ public class MainFrame extends Application {
 		} else {
 			return false;
 		}
+	}
+
+	public void zoomIn() {
+		if (zoomFactor > minZoomValue) {
+			zoomFactor /= zoomStep;
+		}
+	}
+
+	public void zoomOut() {
+		if (zoomFactor < maxZoomValue) {
+			zoomFactor *= zoomStep;
+		}
+		normalizeZoom();
+	}
+
+	private void normalizeZoom() {
+		if (Math.abs(zoomFactor - 1) < zoomStep / 10) {
+			zoomFactor = 1;
+		}
+	}
+
+	public void setDefaultZoom() {
+		zoomFactor = 1;
 	}
 
 	public static void main(String[] args) {

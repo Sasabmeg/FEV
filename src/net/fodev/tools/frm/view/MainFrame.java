@@ -1,6 +1,7 @@
 package net.fodev.tools.frm.view;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -38,6 +39,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import net.fodev.tools.frm.control.FrameSelector;
 import net.fodev.tools.frm.control.FrmFileSelector;
+import net.fodev.tools.frm.control.FrmImageConverter;
 
 public class MainFrame extends Application {
 	private FrmFileSelector fileSelector;
@@ -46,9 +48,11 @@ public class MainFrame extends Application {
 	private GridPane root;
 	private GridPane fileSelectionGrid;
 	private GridPane frameControlsGrid;
+	private GridPane frameExportGrid;
 	private BorderedTitledPane fileSelectionGroup;
 	private BorderedTitledPane frameViewGroup;
 	private BorderedTitledPane frameControlGroup;
+	private BorderedTitledPane frameExportGroup;
 	private Pane frameViewContainer;
 	private ImageView frameView;
 	private Button directionButton[] = new Button[6];
@@ -62,6 +66,7 @@ public class MainFrame extends Application {
 	private Button prevFileButton;
 	private Button selectFileButton;
 	private Button fileMaskButton;
+	private Button exportFrameButton;
 	private Label filePathLabel;
 	private Label fileMaskLabel;
 	private TextArea frameInfoText;
@@ -89,6 +94,8 @@ public class MainFrame extends Application {
 			addFrameView();
 			addFrameInfoTextArea();
 
+			addFrameExportControls();
+
 			addKeybinds();
 			addMousebinds();
 
@@ -97,6 +104,44 @@ public class MainFrame extends Application {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void addFrameExportControls() {
+		frameExportGrid = new GridPane();
+		frameExportGrid.setPrefWidth(600);
+		frameExportGrid.setHgap(5);
+		frameExportGrid.setVgap(5);
+		frameExportGrid.setPadding(new Insets(10, 5, 5, 5));
+		frameExportGrid.setGridLinesVisible(false);
+		frameExportGrid.setAlignment(Pos.CENTER_LEFT);
+		GridPane.setConstraints(frameExportGrid, 0, 0, 1, 1, HPos.LEFT, VPos.CENTER);
+		GridPane.setHalignment(frameExportGrid, HPos.LEFT);
+
+		frameExportGroup = new BorderedTitledPane("Frame export", frameExportGrid);
+		Label label = (Label) frameExportGroup.getChildren().get(0);
+		label.setStyle(
+				"-fx-translate-x:  8; -fx-translate-y: -9; -fx-padding: 0 0 0 4; -fx-background-color: -fx-background;");
+
+		frameExportGroup.setStyle(
+				"-fx-content-display: top; -fx-border-color:black; -fx-border-insets: 8 3 3 3; -fx-border-width:1;");
+		GridPane.setConstraints(frameExportGroup, 1, 2, 1, 1);
+
+		exportFrameButton = new Button("Export frame.");
+		exportFrameButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				System.out.println("exportFrameButton");
+				try {
+					FrmImageConverter.WriteImageToBmpFile(image, "1.jpg");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		GridPane.setConstraints(exportFrameButton, 0, 0, 1, 1, HPos.CENTER, VPos.CENTER);
+		frameExportGrid.getChildren().add(exportFrameButton);
+
+		root.getChildren().add(frameExportGroup);
 	}
 
 	private void addMousebinds() {
@@ -109,7 +154,6 @@ public class MainFrame extends Application {
 				} else {
 					zoomIn();
 				}
-				System.out.println(zoomFactor);
 				event.consume();
 				try {
 					showCurrentFrame(false);
@@ -508,8 +552,20 @@ public class MainFrame extends Application {
 			frameSelector.readHeaderFromFile(fileSelector.getCurrentFile());
 			image = frameSelector.getImage();
 		}
-		double imageWidth = image.getWidth() * zoomFactor;
-		double imageHeight = image.getHeight() * zoomFactor;
+		scaleImageViewForImage(image.getWidth(), image.getHeight());
+
+		frameView.setImage(image);
+		if (autoAnimation) {
+			playAnimation();
+		}
+		updatePathLabel();
+		updateFileMaskLabel();
+		updateFrameInfoText();
+	}
+
+	private void scaleImageViewForImage(double width, double height) {
+		width = width * zoomFactor;
+		height = height * zoomFactor;
 		double containerWidth = frameViewContainer.getWidth() > 0 ? frameViewContainer.getWidth()
 				: frameViewContainer.getPrefWidth();
 		double containerHeight = frameViewContainer.getHeight() > 0 ? frameViewContainer.getHeight()
@@ -517,8 +573,8 @@ public class MainFrame extends Application {
 		containerWidth -= 20;
 		containerHeight -= 20;
 
-		double widthScale = containerWidth / imageWidth;
-		double heightScale = containerHeight / imageHeight;
+		double widthScale = containerWidth / width;
+		double heightScale = containerHeight / height;
 		double scale = widthScale < heightScale ? widthScale : heightScale;
 		if (scale < 1) {
 			frameView.setScaleX(1);
@@ -534,14 +590,6 @@ public class MainFrame extends Application {
 			frameView.setScaleX(zoomFactor);
 			frameView.setScaleY(zoomFactor);
 		}
-
-		frameView.setImage(image);
-		if (autoAnimation) {
-			playAnimation();
-		}
-		updatePathLabel();
-		updateFileMaskLabel();
-		updateFrameInfoText();
 	}
 
 	private void updateFrameInfoText() {
@@ -646,12 +694,27 @@ public class MainFrame extends Application {
 							new KeyValue(frameView.imageProperty(), images[i])));
 				}
 				animation.setCycleCount(Timeline.INDEFINITE);
+				scaleImageViewForAnimation(images);
 				animation.play();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				animation.stop();
 			}
 		}
+	}
+
+	private void scaleImageViewForAnimation(Image[] images) {
+		int maxHeight = 0;
+		int maxWidth = 0;
+		for (Image i : images) {
+			if (maxWidth < i.getWidth()) {
+				maxWidth = (int) i.getWidth();
+			}
+			if (maxHeight < i.getHeight()) {
+				maxHeight = (int) i.getHeight();
+			}
+		}
+		scaleImageViewForImage(image.getWidth(), image.getHeight());
 	}
 
 	private void stopAnimation() {

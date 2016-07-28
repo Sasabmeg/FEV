@@ -1,5 +1,6 @@
 package net.fodev.tools.frm.control;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
@@ -10,8 +11,11 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import net.fodev.tools.frm.model.FoPalette;
 
@@ -43,5 +47,15 @@ public class FrmImageConverter {
 		SampleModel sampleModel = wr.getSampleModel();
 		sampleModel = sampleModel.createCompatibleSampleModel(width, height);
 		return sampleModel;
+	}
+
+	public static void WriteImageToBmpFile(Image image, String filename) throws IOException {
+		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+		// Remove alpha-channel from buffered image:
+		BufferedImage imageRGB = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
+		Graphics2D graphics = imageRGB.createGraphics();
+		graphics.drawImage(bufferedImage, 0, 0, null);
+		ImageIO.write(imageRGB, "jpg", new File(filename));
+		graphics.dispose();
 	}
 }

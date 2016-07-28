@@ -14,7 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import net.fodev.tools.frm.model.FoPalette;
@@ -55,7 +54,13 @@ public class FrmImageConverter {
 		BufferedImage imageRGB = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
 		Graphics2D graphics = imageRGB.createGraphics();
 		graphics.drawImage(bufferedImage, 0, 0, null);
-		ImageIO.write(imageRGB, "jpg", new File(filename));
+		String extension = "";
+		int i = filename.lastIndexOf('.');
+		int p = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+		if (i > p) {
+		    extension = filename.substring(i+1);
+		}
+		ImageIO.write(imageRGB, extension, new File(filename));
 		graphics.dispose();
 	}
 }

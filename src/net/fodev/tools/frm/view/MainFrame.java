@@ -38,6 +38,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import net.fodev.tools.frm.control.FrameSelector;
+import net.fodev.tools.frm.control.FrmExporter;
 import net.fodev.tools.frm.control.FrmFileSelector;
 import net.fodev.tools.frm.control.FrmImageConverter;
 
@@ -67,7 +68,6 @@ public class MainFrame extends Application {
 	private Button selectFileButton;
 	private Button fileMaskButton;
 	private Button exportFrameButton;
-	private Button exportDirectionButton;
 	private Button exportAnimationButton;
 	private Button exportPaletteButton;
 	private Button exportAllAnimationsButton;
@@ -135,8 +135,8 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent arg0) {
 				try {
-					FrmImageConverter.WriteImageToBmpFile(image, "1.png");
-				} catch (IOException e) {
+					FrmExporter.exportFrameToFile(frameSelector.getCurrentFrame(), "1.png");
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

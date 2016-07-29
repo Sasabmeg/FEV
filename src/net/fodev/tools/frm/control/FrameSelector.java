@@ -8,10 +8,8 @@ public class FrameSelector {
 	final private static int defaultFramesPerSecond = 8;
 
 	private FrmHeader header;
-	private FrmFrame frame;
 	private int direction = 0;
 	private int frameOffset = 0;
-	private int currentFrameIndex;
 
 	public FrameSelector() {
 	}
@@ -21,11 +19,7 @@ public class FrameSelector {
 	}
 
 	public String getFrameInfo() {
-		return frame.toString();
-	}
-
-	public int getCurrentFrameIndex() {
-		return currentFrameIndex;
+		return header.getFrame(getCurrentFrameIndex()).toString();
 	}
 
 	public int getDirection() {
@@ -44,10 +38,10 @@ public class FrameSelector {
 		return header.getFramesPerDirection();
 	}
 
-	public Image getImage() {
+	public int getCurrentFrameIndex() {
 		int framesPerDirection = header.getFramesPerDirection();
 		int totalFrames = header.getTotalFrames();
-		currentFrameIndex = 0;
+		int currentFrameIndex = 0;
 		if (frameOffset < 0 || frameOffset > framesPerDirection - 1) {
 			frameOffset = 0;
 		}
@@ -56,9 +50,17 @@ public class FrameSelector {
 		} else {
 			currentFrameIndex = 0;
 		}
-		frame = header.getFrame(currentFrameIndex);
+		return currentFrameIndex;
+	}
+
+	public FrmFrame getCurrentFrame() {
+		return header.getFrame(getCurrentFrameIndex());
+	}
+
+	public Image getImage() {
+		FrmFrame frame = header.getFrame(getCurrentFrameIndex());
 		Image image = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
-				frame.getFrameOffset(currentFrameIndex));
+				frame.getFrameOffset(getCurrentFrameIndex()));
 		return image;
 	}
 
@@ -67,13 +69,14 @@ public class FrameSelector {
 		int framesPerDirection = header.getFramesPerDirection();
 		images = new Image[framesPerDirection];
 		int totalFrames = header.getTotalFrames();
+		int currentFrameIndex;
 		if (direction + 1 <= totalFrames / framesPerDirection) {
 			currentFrameIndex = framesPerDirection * direction;
 		} else {
 			currentFrameIndex = 0;
 		}
 		for (int i = 0; i < framesPerDirection; i++) {
-			frame = header.getFrame(currentFrameIndex + i);
+			FrmFrame frame = header.getFrame(currentFrameIndex + i);
 			images[i] = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
 					frame.getFrameOffset(currentFrameIndex + i));
 		}
@@ -81,11 +84,11 @@ public class FrameSelector {
 	}
 
 	public int getFrameOffsetIndex() {
-		return frame.getFrameOffset(currentFrameIndex);
+		return header.getFrame(getCurrentFrameIndex()).getFrameOffset(getCurrentFrameIndex());
 	}
 
 	public int getFrameIndex() {
-		return currentFrameIndex;
+		return getCurrentFrameIndex();
 	}
 
 	public void next() {

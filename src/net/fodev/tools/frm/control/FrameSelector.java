@@ -114,4 +114,8 @@ public class FrameSelector {
 	public int getFramesPerSecond() {
 		return header.getFramesPerSecond() > 0 ? header.getFramesPerSecond() : defaultFramesPerSecond;
 	}
+
+	public FrmHeader getHeader() {
+		return header;
+	}
 }

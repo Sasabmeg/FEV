@@ -102,11 +102,18 @@ public class FrmFileSelector {
 		}
 	}
 
-	public String getCurrentFile() throws Exception {
+	public String getCurrentFileNameAndPath() throws Exception {
 		if (index < 0 || index >= fileList.size()) {
 			throw new Exception("No files found with specific index");
 		}
 		return currentFolder + "/" + fileList.get(index);
+	}
+
+	public String getCurrentFileName() throws Exception {
+		if (index < 0 || index >= fileList.size()) {
+			throw new Exception("No files found with specific index");
+		}
+		return fileList.get(index);
 	}
 
 	public int getTotalFilesInList() {

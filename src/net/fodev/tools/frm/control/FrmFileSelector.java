@@ -31,16 +31,20 @@ public class FrmFileSelector {
 	}
 
 	private List<String> getFilesInFolder(String path) {
-		File folder = new File(path);
 		List<String> fileList = new ArrayList<String>();
-		for (File fileEntry : folder.listFiles()) {
-			if (fileEntry.isDirectory()) {
-				// recursive call?
-			} else {
-				fileList.add(fileEntry.getName());
+		try {
+			File folder = new File(path);
+			for (File fileEntry : folder.listFiles()) {
+				if (fileEntry.isDirectory()) {
+					// recursive call?
+				} else {
+					fileList.add(fileEntry.getName());
+				}
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		//fileList.sort(null);
+		// fileList.sort(null);
 		return fileList;
 	}
 

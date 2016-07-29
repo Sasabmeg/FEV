@@ -174,7 +174,7 @@ public class MainFrame extends Application {
 	}
 
 	private void setDefaultFileList() {
-		fileSelector.setCurrentFolder("f:/Code/FOnline/Fallout_Dat/art/critters");
+		fileSelector.setCurrentFolder("f:/Code/FOnline/Fallout_Dat1/art/critters");
 	}
 
 	private void addFileSelectButton(Stage primaryStage) {

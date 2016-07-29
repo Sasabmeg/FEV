@@ -67,6 +67,10 @@ public class MainFrame extends Application {
 	private Button selectFileButton;
 	private Button fileMaskButton;
 	private Button exportFrameButton;
+	private Button exportDirectionButton;
+	private Button exportAnimationButton;
+	private Button exportPaletteButton;
+	private Button exportAllAnimationsButton;
 	private Label filePathLabel;
 	private Label fileMaskLabel;
 	private TextArea frameInfoText;
@@ -113,9 +117,9 @@ public class MainFrame extends Application {
 		frameExportGrid.setVgap(5);
 		frameExportGrid.setPadding(new Insets(10, 5, 5, 5));
 		frameExportGrid.setGridLinesVisible(false);
-		frameExportGrid.setAlignment(Pos.CENTER_LEFT);
-		GridPane.setConstraints(frameExportGrid, 0, 0, 1, 1, HPos.LEFT, VPos.CENTER);
-		GridPane.setHalignment(frameExportGrid, HPos.LEFT);
+		frameExportGrid.setAlignment(Pos.CENTER);
+		GridPane.setConstraints(frameExportGrid, 0, 0, 1, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setHalignment(frameExportGrid, HPos.CENTER);
 
 		frameExportGroup = new BorderedTitledPane("Frame export", frameExportGrid);
 		Label label = (Label) frameExportGroup.getChildren().get(0);
@@ -126,13 +130,12 @@ public class MainFrame extends Application {
 				"-fx-content-display: top; -fx-border-color:black; -fx-border-insets: 8 3 3 3; -fx-border-width:1;");
 		GridPane.setConstraints(frameExportGroup, 1, 2, 1, 1);
 
-		exportFrameButton = new Button("Export frame.");
+		exportFrameButton = new Button("Exp frame");
 		exportFrameButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				System.out.println("exportFrameButton");
 				try {
-					FrmImageConverter.WriteImageToBmpFile(image, "1.jpg");
+					FrmImageConverter.WriteImageToBmpFile(image, "1.png");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -140,6 +143,48 @@ public class MainFrame extends Application {
 		});
 		GridPane.setConstraints(exportFrameButton, 0, 0, 1, 1, HPos.CENTER, VPos.CENTER);
 		frameExportGrid.getChildren().add(exportFrameButton);
+
+		exportAnimationButton = new Button("Exp animation");
+		exportAnimationButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				try {
+					FrmImageConverter.WriteImageToBmpFile(image, "1.png");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		GridPane.setConstraints(exportAnimationButton, 0, 1, 1, 1, HPos.CENTER, VPos.CENTER);
+		frameExportGrid.getChildren().add(exportAnimationButton);
+
+		exportPaletteButton = new Button("Exp palette");
+		exportPaletteButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				try {
+					FrmImageConverter.WriteImageToBmpFile(image, "1.png");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		GridPane.setConstraints(exportPaletteButton, 1, 0, 1, 1, HPos.CENTER, VPos.CENTER);
+		frameExportGrid.getChildren().add(exportPaletteButton);
+
+		exportAllAnimationsButton = new Button("Exp all anims");
+		exportAllAnimationsButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				try {
+					FrmImageConverter.WriteImageToBmpFile(image, "1.png");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		GridPane.setConstraints(exportAllAnimationsButton, 1, 1, 1, 1, HPos.CENTER, VPos.CENTER);
+		frameExportGrid.getChildren().add(exportAllAnimationsButton);
 
 		root.getChildren().add(frameExportGroup);
 	}
@@ -174,7 +219,7 @@ public class MainFrame extends Application {
 	}
 
 	private void setDefaultFileList() {
-		fileSelector.setCurrentFolder("f:/Code/FOnline/Fallout_Dat1/art/critters");
+		fileSelector.setCurrentFolder("f:/Code/FOnline/Fallout_Dat/art/critters");
 	}
 
 	private void addFileSelectButton(Stage primaryStage) {

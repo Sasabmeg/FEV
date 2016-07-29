@@ -6,6 +6,7 @@ import java.util.List;
 
 public class FrmFileSelector {
 	private String currentFolder;
+	private String currentExportFolder;
 	private List<String> fileList;
 	private int index = 0;
 	private String mask = "*.frm";
@@ -136,5 +137,13 @@ public class FrmFileSelector {
 				return;
 			}
 		}
+	}
+
+	public String getCurrentExportFolder() {
+		return currentExportFolder;
+	}
+
+	public void setCurrentExportFolder(String currentExportFolder) {
+		this.currentExportFolder = currentExportFolder;
 	}
 }

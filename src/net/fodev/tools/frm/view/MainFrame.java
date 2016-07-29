@@ -98,7 +98,7 @@ public class MainFrame extends Application {
 			addFrameView();
 			addFrameInfoTextArea();
 
-			addFrameExportControls();
+			addFrameExportControls(primaryStage);
 
 			addKeybinds();
 			addMousebinds();
@@ -110,7 +110,7 @@ public class MainFrame extends Application {
 		}
 	}
 
-	private void addFrameExportControls() {
+	private void addFrameExportControls(Stage primaryStage) {
 		frameExportGrid = new GridPane();
 		frameExportGrid.setPrefWidth(600);
 		frameExportGrid.setHgap(5);
@@ -134,8 +134,27 @@ public class MainFrame extends Application {
 		exportFrameButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
+				FileChooser fileChooser = new FileChooser();
+				FileChooser.ExtensionFilter extBmpFilter = new FileChooser.ExtensionFilter("Bitmap files (*.bmp)", "*.bmp");
+				FileChooser.ExtensionFilter extPngFilter = new FileChooser.ExtensionFilter("Portable Network Graphics files (*.png)", "*.png");
+				FileChooser.ExtensionFilter extGifFilter = new FileChooser.ExtensionFilter("Graphics Intercahnge Format files (*.gif)", "*.gif");
+				fileChooser.getExtensionFilters().add(extBmpFilter);
+				fileChooser.getExtensionFilters().add(extPngFilter);
+				fileChooser.getExtensionFilters().add(extGifFilter);
+				if (!fileSelector.isFileListEmpty()) {
+					Path p = Paths.get(fileSelector.getCurrentExportFolder());
+					try {
+						fileChooser.setInitialDirectory(p.toFile());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 				try {
-					FrmExporter.exportFrameToFile(frameSelector.getCurrentFrame(), "1.png");
+					File file = fileChooser.showSaveDialog(primaryStage);
+					if (file != null) {
+						fileSelector.setCurrentExportFolder(file.getParent());
+						FrmExporter.exportFrameToFile(frameSelector.getCurrentFrame(), frameSelector.getCurrentFrameIndex(), file.toString());
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -220,6 +239,7 @@ public class MainFrame extends Application {
 
 	private void setDefaultFileList() {
 		fileSelector.setCurrentFolder("f:/Code/FOnline/Fallout_Dat/art/critters");
+		fileSelector.setCurrentExportFolder("f:/Code/FOnline/Fallout_Dat/art/critters");
 	}
 
 	private void addFileSelectButton(Stage primaryStage) {
@@ -233,7 +253,7 @@ public class MainFrame extends Application {
 				if (!fileSelector.isFileListEmpty()) {
 					Path p = Paths.get(fileSelector.getCurrentFolder());
 					try {
-						fileChooser.setInitialDirectory(p.getParent().toFile());
+						fileChooser.setInitialDirectory(p.toFile());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -242,7 +262,7 @@ public class MainFrame extends Application {
 					File file = fileChooser.showOpenDialog(primaryStage);
 					if (file != null) {
 						fileSelector.setCurrentFolder(file.getParent());
-						fileSelector.setCurrentFile(file.toString());
+						fileSelector.setCurrentFile(file.getName());
 						showCurrentFrame(true);
 					}
 				} catch (Exception e) {

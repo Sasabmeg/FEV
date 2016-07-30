@@ -1,7 +1,6 @@
 package net.fodev.tools.frm.view;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -41,7 +40,6 @@ import javafx.util.Duration;
 import net.fodev.tools.frm.control.FrameSelector;
 import net.fodev.tools.frm.control.FrmExporter;
 import net.fodev.tools.frm.control.FrmFileSelector;
-import net.fodev.tools.frm.control.FrmImageConverter;
 
 public class MainFrame extends Application {
 	private FrmFileSelector fileSelector;
@@ -138,7 +136,7 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent arg0) {
 				try {
-					//FrmImageConverter.WriteImageToBmpFile(image, "1.png");
+					FrmExporter.exportDefaultFoPaletteIntoPng("fo.png");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -185,8 +183,8 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent arg0) {
 				FileChooser fileChooser = new FileChooser();
-				FileChooser.ExtensionFilter extBmpFilter = new FileChooser.ExtensionFilter("Bitmap files (*.bmp)", "*.bmp");
 				FileChooser.ExtensionFilter extPngFilter = new FileChooser.ExtensionFilter("Portable Network Graphics files (*.png)", "*.png");
+				FileChooser.ExtensionFilter extBmpFilter = new FileChooser.ExtensionFilter("Bitmap files (*.bmp)", "*.bmp");
 				FileChooser.ExtensionFilter extGifFilter = new FileChooser.ExtensionFilter("Graphics Intercahnge Format files (*.gif)", "*.gif");
 				fileChooser.getExtensionFilters().add(extBmpFilter);
 				fileChooser.getExtensionFilters().add(extPngFilter);
@@ -364,7 +362,7 @@ public class MainFrame extends Application {
 		primaryStage.setMinHeight(480);
 		primaryStage.setMaxWidth(1024);
 		primaryStage.setMaxHeight(768);
-		primaryStage.setTitle("Fallout Frame Viewer");
+		primaryStage.setTitle("FOnline Frame Viewer");
 	}
 
 	private void addFrameControls() {

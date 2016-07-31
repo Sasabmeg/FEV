@@ -19,10 +19,10 @@ import javafx.scene.image.Image;
 import net.fodev.tools.frm.model.FoPalette;
 
 public class FrmImageConverter {
-	public static Image getJavaFXImage(byte[] rawPixels, int width, int height, int offset) {
+	public static Image getJavaFXImage(byte[] rawPixels, int width, int height, int offset, boolean hasBackground) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			ImageIO.write((RenderedImage) createBufferedImage(rawPixels, width, height, offset), "png", out);
+			ImageIO.write((RenderedImage) createBufferedImage(rawPixels, width, height, offset, hasBackground), "png", out);
 			out.flush();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -31,36 +31,31 @@ public class FrmImageConverter {
 		return new javafx.scene.image.Image(in);
 	}
 
-	private static BufferedImage createBufferedImage(byte[] pixels, int width, int height, int offset) {
-		SampleModel sm = getIndexSampleModel(width, height);
+	private static BufferedImage createBufferedImage(byte[] pixels, int width, int height, int offset, boolean hasBackground) {
+		SampleModel sm = getIndexSampleModel(width, height, hasBackground);
 		DataBuffer db = new DataBufferByte(pixels, width * height, offset);
 		WritableRaster raster = Raster.createWritableRaster(sm, db, null);
-		IndexColorModel cm = FoPalette.getDefaultColorModel();
+		IndexColorModel cm = FoPalette.getDefaultColorModel(hasBackground);
 		BufferedImage image = new BufferedImage(cm, raster, false, null);
 		return image;
 	}
 
-	private static SampleModel getIndexSampleModel(int width, int height) {
-		IndexColorModel icm = FoPalette.getDefaultColorModel();
+	private static SampleModel getIndexSampleModel(int width, int height, boolean hasBackground) {
+		IndexColorModel icm = FoPalette.getDefaultColorModel(hasBackground);
 		WritableRaster wr = icm.createCompatibleWritableRaster(1, 1);
 		SampleModel sampleModel = wr.getSampleModel();
 		sampleModel = sampleModel.createCompatibleSampleModel(width, height);
 		return sampleModel;
 	}
 
-	public static void WriteImageToBmpFile(Image image, String filename) throws IOException {
+	public static void writeImageToBmpFile(Image image, String filename) throws IOException {
 		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 		// Remove alpha-channel from buffered image:
 		BufferedImage imageRGB = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);
 		Graphics2D graphics = imageRGB.createGraphics();
 		graphics.drawImage(bufferedImage, 0, 0, null);
-		String extension = "";
-		int i = filename.lastIndexOf('.');
-		int p = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
-		if (i > p) {
-		    extension = filename.substring(i+1);
-		}
-		ImageIO.write(imageRGB, extension, new File(filename));
+		ImageIO.write(imageRGB, FrmUtils.getFileExtension(filename), new File(filename));
 		graphics.dispose();
 	}
+
 }

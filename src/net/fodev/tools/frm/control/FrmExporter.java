@@ -13,26 +13,26 @@ import net.fodev.tools.frm.model.FrmFrame;
 import net.fodev.tools.frm.model.FrmHeader;
 
 public class FrmExporter {
-	public static void exportSingleFrameToFile(FrmFrame frame, int currentIndex, String filename) throws IOException {
+	public static void exportSingleFrameToFile(FrmFrame frame, int currentIndex, String filename, boolean hasBackground) throws IOException {
 		Image image = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
-				frame.getFrameOffset(currentIndex));
-		FrmImageConverter.WriteImageToBmpFile(image, filename);;
+				frame.getFrameOffset(currentIndex), hasBackground);
+		FrmImageConverter.writeImageToBmpFile(image, filename);
 	}
 
-	public static void exportAnimationToFile(FrmHeader header, String folderName, String frameFileName) throws IOException {
+	public static void exportAnimationToFile(FrmHeader header, String folderName, String frameFileName, boolean hasBackground) throws IOException {
 		String newFolderName = folderName + "/" + frameFileName;
 		new File(newFolderName).mkdirs();
 		for (int direction = 0; direction < header.getTotalFrames() / header.getFramesPerDirection(); direction++) {
 			for (int index = 0; index < header.getFramesPerDirection(); index++) {
 				FrmFrame frame = header.getFrame(direction * header.getFramesPerDirection() + index);
-				exportSingleFrameToFile(frame, 0, newFolderName + "/" + direction + "_" + index + ".png");
+				exportSingleFrameToFile(frame, 0, newFolderName + "/" + direction + "_" + index + ".png", hasBackground);
 			}
 		}
 	}
 
 	public static void exportDefaultFoPaletteIntoPng(String filename) throws IOException {
 		BufferedImage bufferedImage = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
-		IndexColorModel foColorModel = FoPalette.getDefaultColorModel();
+		IndexColorModel foColorModel = FoPalette.getDefaultColorModel(true);
 		for (int i = 0; i < 16; i ++) {
 			for (int j = 0; j < 16; j++) {
 				int index = i * 16 + j;
@@ -49,5 +49,9 @@ public class FrmExporter {
 		}
 		File outputfile = new File(filename);
 		ImageIO.write(bufferedImage, "png", outputfile);
+	}
+
+	public static void exportFoPaletteIntoPng(String filename) {
+		System.out.println("To be implemented - exportFoPaletteIntoPng(" + filename + ")");
 	}
 }

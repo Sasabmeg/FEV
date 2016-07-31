@@ -19,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -40,6 +41,7 @@ import javafx.util.Duration;
 import net.fodev.tools.frm.control.FrameSelector;
 import net.fodev.tools.frm.control.FrmExporter;
 import net.fodev.tools.frm.control.FrmFileSelector;
+import net.fodev.tools.frm.control.FrmUtils;
 
 public class MainFrame extends Application {
 	private FrmFileSelector fileSelector;
@@ -55,6 +57,7 @@ public class MainFrame extends Application {
 	private BorderedTitledPane frameExportGroup;
 	private Pane frameViewContainer;
 	private ImageView frameView;
+	private CheckBox imageBackgroundCheckBox;
 	private Button directionButton[] = new Button[6];
 	private Button firstFrameButton;
 	private Button lastFrameButton;
@@ -135,12 +138,44 @@ public class MainFrame extends Application {
 		exportPaletteButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
+				FileChooser fileChooser = new FileChooser();
+				FileChooser.ExtensionFilter extPngFilter = new FileChooser.ExtensionFilter(
+						"Portable Network Graphics files (*.png)", "*.png");
+				FileChooser.ExtensionFilter extBmpFilter = new FileChooser.ExtensionFilter("Bitmap files (*.bmp)",
+						"*.bmp");
+				FileChooser.ExtensionFilter extGifFilter = new FileChooser.ExtensionFilter(
+						"Graphics Intercahnge Format files (*.gif)", "*.gif");
+				FileChooser.ExtensionFilter extPalFilter = new FileChooser.ExtensionFilter(
+						"Fallout palette file (*.pal)", "*.pal");
+				fileChooser.getExtensionFilters().add(extBmpFilter);
+				fileChooser.getExtensionFilters().add(extPngFilter);
+				fileChooser.getExtensionFilters().add(extGifFilter);
+				fileChooser.getExtensionFilters().add(extPalFilter);
+				//	TODO: Merge that if and command into command, and throw exceptions or solve null pointer other way
+				if (!fileSelector.isFileListEmpty()) {
+					Path p = Paths.get(fileSelector.getCurrentExportFolder());
+					try {
+						fileChooser.setInitialDirectory(p.toFile());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 				try {
-					FrmExporter.exportDefaultFoPaletteIntoPng("fo.png");
+					File file = fileChooser.showSaveDialog(primaryStage);
+					if (file != null) {
+						fileSelector.setCurrentExportFolder(file.getParent());
+						//	TODO: Add switch here to save palette as a FoPalette or a regular file with the colors.
+						if (FrmUtils.getFileExtension(file.toString()).equals("pal")) {
+							FrmExporter.exportFoPaletteIntoPng(file.toString());
+						} else {
+							FrmExporter.exportDefaultFoPaletteIntoPng(file.toString());
+						}
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
+
 		});
 		GridPane.setConstraints(exportPaletteButton, 0, 1, 2, 1, HPos.CENTER, VPos.CENTER);
 		frameExportGrid.getChildren().add(exportPaletteButton);
@@ -165,8 +200,10 @@ public class MainFrame extends Application {
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.toString());
 						String fileName = fileSelector.getCurrentFileName();
-						FrmExporter.exportAnimationToFile(frameSelector.getHeader(), file.toString(), fileName);
-						//FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(), frameSelector.getCurrentFrameIndex(), file.toString());
+						FrmExporter.exportAnimationToFile(frameSelector.getHeader(), file.toString(), fileName, frameSelector.isHasBackground());
+						// FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(),
+						// frameSelector.getCurrentFrameIndex(),
+						// file.toString());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -183,9 +220,12 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent arg0) {
 				FileChooser fileChooser = new FileChooser();
-				FileChooser.ExtensionFilter extPngFilter = new FileChooser.ExtensionFilter("Portable Network Graphics files (*.png)", "*.png");
-				FileChooser.ExtensionFilter extBmpFilter = new FileChooser.ExtensionFilter("Bitmap files (*.bmp)", "*.bmp");
-				FileChooser.ExtensionFilter extGifFilter = new FileChooser.ExtensionFilter("Graphics Intercahnge Format files (*.gif)", "*.gif");
+				FileChooser.ExtensionFilter extPngFilter = new FileChooser.ExtensionFilter(
+						"Portable Network Graphics files (*.png)", "*.png");
+				FileChooser.ExtensionFilter extBmpFilter = new FileChooser.ExtensionFilter("Bitmap files (*.bmp)",
+						"*.bmp");
+				FileChooser.ExtensionFilter extGifFilter = new FileChooser.ExtensionFilter(
+						"Graphics Intercahnge Format files (*.gif)", "*.gif");
 				fileChooser.getExtensionFilters().add(extBmpFilter);
 				fileChooser.getExtensionFilters().add(extPngFilter);
 				fileChooser.getExtensionFilters().add(extGifFilter);
@@ -201,7 +241,8 @@ public class MainFrame extends Application {
 					File file = fileChooser.showSaveDialog(primaryStage);
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.getParent());
-						FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(), frameSelector.getCurrentFrameIndex(), file.toString());
+						FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(),
+								frameSelector.getCurrentFrameIndex(), file.toString(), frameSelector.isHasBackground());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -234,6 +275,7 @@ public class MainFrame extends Application {
 
 	private void setFrameSelector() {
 		frameSelector = new FrameSelector();
+		frameSelector.setHasBackground(false);
 	}
 
 	private void setFileSelector() {
@@ -484,6 +526,21 @@ public class MainFrame extends Application {
 		GridPane.setConstraints(lastFrameButton, 5, 0);
 		frameControlsGrid.getChildren().add(lastFrameButton);
 
+	    imageBackgroundCheckBox = new CheckBox("Image background");
+	    imageBackgroundCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+	        @Override
+	    	public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+	        	frameSelector.setHasBackground(new_val);
+	        	try {
+					showCurrentFrame(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	        }
+	    });
+		GridPane.setConstraints(imageBackgroundCheckBox, 0, 2, 3, 1);
+		frameControlsGrid.getChildren().add(imageBackgroundCheckBox);
+
 		frameControlGroup = new BorderedTitledPane("Frame control", frameControlsGrid);
 		Label label = (Label) frameControlGroup.getChildren().get(0);
 		label.setStyle(
@@ -635,9 +692,9 @@ public class MainFrame extends Application {
 	private void scaleImageViewForImage(double width, double height) {
 		width = width * zoomFactor;
 		height = height * zoomFactor;
-		double containerWidth = frameViewContainer.getWidth() > 0 ? frameViewContainer.getWidth()
+		double containerWidth = frameViewContainer.getWidth() - 20 > 0 ? frameViewContainer.getWidth()
 				: frameViewContainer.getPrefWidth();
-		double containerHeight = frameViewContainer.getHeight() > 0 ? frameViewContainer.getHeight()
+		double containerHeight = frameViewContainer.getHeight() - 20 > 0 ? frameViewContainer.getHeight()
 				: frameViewContainer.getPrefHeight();
 		containerWidth -= 20;
 		containerHeight -= 20;
@@ -783,7 +840,7 @@ public class MainFrame extends Application {
 				maxHeight = (int) i.getHeight();
 			}
 		}
-		scaleImageViewForImage(image.getWidth(), image.getHeight());
+		scaleImageViewForImage(maxWidth, maxHeight);
 	}
 
 	private void stopAnimation() {

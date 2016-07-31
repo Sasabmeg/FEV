@@ -6,12 +6,20 @@ import net.fodev.tools.frm.model.FrmHeader;
 
 public class FrameSelector {
 	final private static int defaultFramesPerSecond = 8;
-
 	private FrmHeader header;
 	private int direction = 0;
 	private int frameOffset = 0;
+	private boolean hasBackground;
 
 	public FrameSelector() {
+	}
+
+	public boolean isHasBackground() {
+		return hasBackground;
+	}
+
+	public void setHasBackground(boolean hasBackground) {
+		this.hasBackground = hasBackground;
 	}
 
 	public String getHeaderInfo() {
@@ -60,7 +68,7 @@ public class FrameSelector {
 	public Image getImage() {
 		FrmFrame frame = header.getFrame(getCurrentFrameIndex());
 		Image image = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
-				frame.getFrameOffset(getCurrentFrameIndex()));
+				frame.getFrameOffset(getCurrentFrameIndex()), hasBackground);
 		return image;
 	}
 
@@ -78,7 +86,7 @@ public class FrameSelector {
 		for (int i = 0; i < framesPerDirection; i++) {
 			FrmFrame frame = header.getFrame(currentFrameIndex + i);
 			images[i] = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
-					frame.getFrameOffset(currentFrameIndex + i));
+					frame.getFrameOffset(currentFrameIndex + i), hasBackground);
 		}
 		return images;
 	}

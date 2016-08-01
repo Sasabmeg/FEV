@@ -397,7 +397,7 @@ public class MainFrame extends Application {
 		primaryStage.setMinHeight(480);
 		primaryStage.setMaxWidth(1024);
 		primaryStage.setMaxHeight(768);
-		primaryStage.setTitle("FOnline Frame Viewer");
+		primaryStage.setTitle("FEV - FOnline (frm) Editor/Viewer");
 	}
 
 	private void addFrameControls() {

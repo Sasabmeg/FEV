@@ -13,7 +13,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
+
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import net.fodev.tools.frm.model.FoPalette;
@@ -33,7 +35,7 @@ public class FrmImageConverter {
 
 	private static BufferedImage createBufferedImage(byte[] pixels, int width, int height, int offset, boolean hasBackground) {
 		SampleModel sm = getIndexSampleModel(width, height, hasBackground);
-		DataBuffer db = new DataBufferByte(pixels, width * height, offset);
+		DataBuffer db = new DataBufferByte(pixels, width * height * 2, offset);
 		WritableRaster raster = Raster.createWritableRaster(sm, db, null);
 		IndexColorModel cm = FoPalette.getDefaultColorModel(hasBackground);
 		BufferedImage image = new BufferedImage(cm, raster, false, null);

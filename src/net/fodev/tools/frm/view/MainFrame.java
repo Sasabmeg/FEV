@@ -41,7 +41,6 @@ import javafx.util.Duration;
 import net.fodev.tools.frm.control.FrameSelector;
 import net.fodev.tools.frm.control.FrmExporter;
 import net.fodev.tools.frm.control.FrmFileSelector;
-import net.fodev.tools.frm.control.FrmUtils;
 
 public class MainFrame extends Application {
 	private FrmFileSelector fileSelector;
@@ -145,13 +144,11 @@ public class MainFrame extends Application {
 						"*.bmp");
 				FileChooser.ExtensionFilter extGifFilter = new FileChooser.ExtensionFilter(
 						"Graphics Intercahnge Format files (*.gif)", "*.gif");
-				FileChooser.ExtensionFilter extPalFilter = new FileChooser.ExtensionFilter(
-						"Fallout palette file (*.pal)", "*.pal");
 				fileChooser.getExtensionFilters().add(extBmpFilter);
 				fileChooser.getExtensionFilters().add(extPngFilter);
 				fileChooser.getExtensionFilters().add(extGifFilter);
-				fileChooser.getExtensionFilters().add(extPalFilter);
-				//	TODO: Merge that if and command into command, and throw exceptions or solve null pointer other way
+				// TODO: Merge that if and command into command, and throw
+				// exceptions or solve null pointer other way
 				if (!fileSelector.isFileListEmpty()) {
 					Path p = Paths.get(fileSelector.getCurrentExportFolder());
 					try {
@@ -164,12 +161,7 @@ public class MainFrame extends Application {
 					File file = fileChooser.showSaveDialog(primaryStage);
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.getParent());
-						//	TODO: Add switch here to save palette as a FoPalette or a regular file with the colors.
-						if (FrmUtils.getFileExtension(file.toString()).equals("pal")) {
-							FrmExporter.exportFoPaletteIntoPng(file.toString());
-						} else {
-							FrmExporter.exportDefaultFoPaletteIntoPng(file.toString());
-						}
+						FrmExporter.exportDefaultFoPaletteIntoFile(file.toString());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -200,7 +192,8 @@ public class MainFrame extends Application {
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.toString());
 						String fileName = fileSelector.getCurrentFileName();
-						FrmExporter.exportAnimationToFile(frameSelector.getHeader(), file.toString(), fileName, frameSelector.isHasBackground());
+						FrmExporter.exportAnimationToFile(frameSelector.getHeader(), file.toString(), fileName,
+								frameSelector.isHasBackground());
 						// FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(),
 						// frameSelector.getCurrentFrameIndex(),
 						// file.toString());
@@ -526,18 +519,18 @@ public class MainFrame extends Application {
 		GridPane.setConstraints(lastFrameButton, 5, 0);
 		frameControlsGrid.getChildren().add(lastFrameButton);
 
-	    imageBackgroundCheckBox = new CheckBox("Image background");
-	    imageBackgroundCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-	        @Override
-	    	public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-	        	frameSelector.setHasBackground(new_val);
-	        	try {
+		imageBackgroundCheckBox = new CheckBox("Image background");
+		imageBackgroundCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+				frameSelector.setHasBackground(new_val);
+				try {
 					showCurrentFrame(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-	        }
-	    });
+			}
+		});
 		GridPane.setConstraints(imageBackgroundCheckBox, 0, 2, 3, 1);
 		frameControlsGrid.getChildren().add(imageBackgroundCheckBox);
 

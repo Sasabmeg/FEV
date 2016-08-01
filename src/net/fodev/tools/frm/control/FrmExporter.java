@@ -30,7 +30,7 @@ public class FrmExporter {
 		}
 	}
 
-	public static void exportDefaultFoPaletteIntoPng(String filename) throws IOException {
+	public static void exportDefaultFoPaletteIntoFile(String filename) throws IOException {
 		BufferedImage bufferedImage = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
 		IndexColorModel foColorModel = FoPalette.getDefaultColorModel(true);
 		for (int i = 0; i < 16; i ++) {
@@ -49,9 +49,5 @@ public class FrmExporter {
 		}
 		File outputfile = new File(filename);
 		ImageIO.write(bufferedImage, "png", outputfile);
-	}
-
-	public static void exportFoPaletteIntoPng(String filename) {
-		System.out.println("To be implemented - exportFoPaletteIntoPng(" + filename + ")");
 	}
 }

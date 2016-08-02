@@ -3,7 +3,6 @@ package net.fodev.tools.frm.view;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -57,6 +56,7 @@ public class MainFrame extends Application {
 	private Pane frameViewContainer;
 	private ImageView frameView;
 	private CheckBox imageBackgroundCheckBox;
+	private CheckBox colorCycleCheckBox;
 	private Button directionButton[] = new Button[6];
 	private Button firstFrameButton;
 	private Button lastFrameButton;
@@ -82,6 +82,7 @@ public class MainFrame extends Application {
 	private final double minZoomValue = 0.25;
 	private final double maxZoomValue = 5;
 	private final double zoomStep = 1.125;
+	private boolean autoColorCycle =  false;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -437,6 +438,7 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				autoAnimation = false;
+				setAutoColorCycle(false);
 				frameSelector.first();
 				try {
 					showCurrentFrame(true);
@@ -453,6 +455,7 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				autoAnimation = false;
+				setAutoColorCycle(false);
 				frameSelector.prev();
 				try {
 					showCurrentFrame(true);
@@ -470,6 +473,7 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				autoAnimation = true;
+				setAutoColorCycle(false);
 				playAnimation();
 			}
 		});
@@ -480,8 +484,8 @@ public class MainFrame extends Application {
 		stopAnimationButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				autoAnimation = false;
 				stopAnimation();
+				setAutoColorCycle(false);
 			}
 		});
 		GridPane.setConstraints(stopAnimationButton, 3, 0);
@@ -492,6 +496,7 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				autoAnimation = false;
+				setAutoColorCycle(false);
 				frameSelector.next();
 				try {
 					showCurrentFrame(true);
@@ -508,6 +513,7 @@ public class MainFrame extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				autoAnimation = false;
+				setAutoColorCycle(false);
 				frameSelector.last();
 				try {
 					showCurrentFrame(true);
@@ -531,8 +537,26 @@ public class MainFrame extends Application {
 				}
 			}
 		});
-		GridPane.setConstraints(imageBackgroundCheckBox, 0, 2, 3, 1);
+		GridPane.setConstraints(imageBackgroundCheckBox, 0, 2, 2, 1);
 		frameControlsGrid.getChildren().add(imageBackgroundCheckBox);
+
+		colorCycleCheckBox = new CheckBox("Color cycle");
+		colorCycleCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+				if (new_val) {
+					autoAnimation = false;
+					stopAnimation();
+					setAutoColorCycle(true);
+					playColorCycleAnimation();
+				} else {
+					setAutoColorCycle(false);
+					stopColorCycleAnimation();
+				}
+			}
+		});
+		GridPane.setConstraints(colorCycleCheckBox, 2, 2, 2, 1);
+		frameControlsGrid.getChildren().add(colorCycleCheckBox);
 
 		frameControlGroup = new BorderedTitledPane("Frame control", frameControlsGrid);
 		Label label = (Label) frameControlGroup.getChildren().get(0);
@@ -547,13 +571,17 @@ public class MainFrame extends Application {
 		root.getChildren().add(frameControlGroup);
 	}
 
+	protected void setAutoColorCycle(boolean value) {
+		autoColorCycle = value;
+		colorCycleCheckBox.setSelected(value);
+	}
+
 	private void addPrevButton() {
 		prevFileButton = new Button();
 		prevFileButton.setText("Prev file");
 		prevFileButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				stopAnimation();
 				fileSelector.prev();
 				frameSelector.first();
 				try {
@@ -573,7 +601,6 @@ public class MainFrame extends Application {
 		nextFileButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				stopAnimation();
 				fileSelector.next();
 				frameSelector.first();
 				try {
@@ -676,6 +703,10 @@ public class MainFrame extends Application {
 		frameView.setImage(image);
 		if (autoAnimation) {
 			playAnimation();
+		} else {
+			if (autoColorCycle ) {
+				playColorCycleAnimation();
+			}
 		}
 		updatePathLabel();
 		updateFileMaskLabel();
@@ -822,6 +853,36 @@ public class MainFrame extends Application {
 		}
 	}
 
+	private void playColorCycleAnimation() {
+		try {
+			Image[] images = frameSelector.getImagesForColorCycleAnimation();
+			animation = new Timeline();
+			int duration = 1000 / 5;
+			for (int i = 0; i < 5; i++) {
+				animation.getKeyFrames().add(new KeyFrame(Duration.millis(i * duration),
+						new KeyValue(frameView.imageProperty(), images[i])));
+			}
+			animation.setCycleCount(Timeline.INDEFINITE);
+			scaleImageViewForAnimation(images);
+			animation.play();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			animation.stop();
+		}
+	}
+
+	private void stopAnimation() {
+		if (isAnimationPlaying()) {
+			animation.stop();
+		}
+	}
+
+	private void stopColorCycleAnimation() {
+		if (isAnimationPlaying()) {
+			animation.stop();
+		}
+	}
+
 	private void scaleImageViewForAnimation(Image[] images) {
 		int maxHeight = 0;
 		int maxWidth = 0;
@@ -834,12 +895,6 @@ public class MainFrame extends Application {
 			}
 		}
 		scaleImageViewForImage(maxWidth, maxHeight);
-	}
-
-	private void stopAnimation() {
-		if (isAnimationPlaying()) {
-			animation.stop();
-		}
 	}
 
 	private boolean isAnimationPlaying() {

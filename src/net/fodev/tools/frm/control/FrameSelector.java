@@ -1,6 +1,7 @@
 package net.fodev.tools.frm.control;
 
 import javafx.scene.image.Image;
+import net.fodev.tools.frm.model.ColorCycleOffset;
 import net.fodev.tools.frm.model.FrmFrame;
 import net.fodev.tools.frm.model.FrmHeader;
 
@@ -87,6 +88,19 @@ public class FrameSelector {
 			FrmFrame frame = header.getFrame(currentFrameIndex + i);
 			images[i] = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
 					frame.getFrameOffset(currentFrameIndex + i), hasBackground);
+		}
+		return images;
+	}
+
+	public Image[] getImagesForColorCycleAnimation() {
+		Image[] images;
+		images = new Image[5];
+		ColorCycleOffset cco =  new ColorCycleOffset();
+		for (int i = 0; i < 5; i++) {
+			FrmFrame frame = header.getFrame(0);
+			images[i] = FrmImageConverter.getJavaFXImageWithColorCycle(frame.getData(), frame.getWidth(), frame.getHeight(),
+					frame.getFrameOffset(0), cco, hasBackground);
+			cco.step();
 		}
 		return images;
 	}

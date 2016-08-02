@@ -3,6 +3,7 @@ package net.fodev.tools.frm.model;
 import java.awt.image.IndexColorModel;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.util.Arrays;
 
 public class FoPalette {
 	public static int[] getColorModelFromFile(String filename) {
@@ -43,6 +44,80 @@ public class FoPalette {
 	    return defaultColorModel;
 	}
 
+	public static IndexColorModel getAnimatedDefaultColorModel(ColorCycleOffset cco, boolean hasBackground) {
+	    byte[] r = getDefaultColorModelRedComponents();
+	    byte[] g = getDefaultColorModelGreenComponents();
+	    byte[] b = getDefaultColorModelBlueComponents();
+	    byte[] a = new byte[256];
+	    if (hasBackground) {
+		    a[0] = (byte)255;
+	    } else {
+	    	a[0] = (byte)0;
+	    }
+	    for (int i = 1; i < 256; i++) {
+	    	a[i] = (byte)255;
+	    }
+
+	    int slimeIndex = 229;
+	    int slimeSize = 4;
+	    byte slimeRed[] = Arrays.copyOfRange(r, slimeIndex, slimeIndex + slimeSize);
+	    byte slimeGreen[] = Arrays.copyOfRange(g, slimeIndex, slimeIndex + slimeSize);
+	    byte slimeBlue[] = Arrays.copyOfRange(b, slimeIndex, slimeIndex + slimeSize);
+	    for (int i = 0; i < slimeSize; i++) {
+	    	r[slimeIndex + i] = slimeRed[(i + cco.slimeOffset) % slimeSize];
+	    	g[slimeIndex + i] = slimeGreen[(i + cco.slimeOffset) % slimeSize];
+	    	b[slimeIndex + i] = slimeBlue[(i + cco.slimeOffset) % slimeSize];
+	    }
+
+	    int shorelineIndex = 248;
+	    int shorelineSize = 6;
+	    byte shorelineRed[] = Arrays.copyOfRange(r, shorelineIndex, shorelineIndex + shorelineSize);
+	    byte shorelineGreen[] = Arrays.copyOfRange(g, shorelineIndex, shorelineIndex + shorelineSize);
+	    byte shorelineBlue[] = Arrays.copyOfRange(b, shorelineIndex, shorelineIndex + shorelineSize);
+	    for (int i = 0; i < shorelineSize; i++) {
+	    	r[shorelineIndex + i] = shorelineRed[(i + cco.shorelineOffset) % shorelineSize];
+	    	g[shorelineIndex + i] = shorelineGreen[(i + cco.shorelineOffset) % shorelineSize];
+	    	b[shorelineIndex + i] = shorelineBlue[(i + cco.shorelineOffset) % shorelineSize];
+	    }
+
+	    int slowfireIndex = 238;
+	    int slowfireSize =  5;
+	    byte slowfireRed[] = Arrays.copyOfRange(r, slowfireIndex, slowfireIndex + slowfireSize);
+	    byte slowfireGreen[] = Arrays.copyOfRange(g, slowfireIndex, slowfireIndex + slowfireSize);
+	    byte slowfireBlue[] = Arrays.copyOfRange(b, slowfireIndex, slowfireIndex + slowfireSize);
+	    for (int i = 0; i < slowfireSize; i++) {
+	    	r[slowfireIndex + i] = slowfireRed[(i + cco.slowfireOffset) % slowfireSize];
+	    	g[slowfireIndex + i] = slowfireGreen[(i + cco.slowfireOffset) % slowfireSize];
+	    	b[slowfireIndex + i] = slowfireBlue[(i + cco.slowfireOffset) % slowfireSize];
+	    }
+
+	    int fastfireIndex = 243;
+	    int fastfireSize = 5;
+	    byte fastfireRed[] = Arrays.copyOfRange(r, fastfireIndex, fastfireIndex + fastfireSize);
+	    byte fastfireGreen[] = Arrays.copyOfRange(g, fastfireIndex, fastfireIndex + fastfireSize);
+	    byte fastfireBlue[] = Arrays.copyOfRange(b, fastfireIndex, fastfireIndex + fastfireSize);
+	    for (int i = 0; i < fastfireSize; i++) {
+	    	r[fastfireIndex + i] = fastfireRed[(i + cco.fastfireOffset) % fastfireSize];
+	    	g[fastfireIndex + i] = fastfireGreen[(i + cco.fastfireOffset) % fastfireSize];
+	    	b[fastfireIndex + i] = fastfireBlue[(i + cco.fastfireOffset) % fastfireSize];
+	    }
+
+	    int monitorsIndex = 233;
+	    int monitorsSize = 5;
+	    byte monitorsRed[] = Arrays.copyOfRange(r, monitorsIndex, monitorsIndex + monitorsSize);
+	    byte monitorsGreen[] = Arrays.copyOfRange(g, monitorsIndex, monitorsIndex + monitorsSize);
+	    byte monitorsBlue[] = Arrays.copyOfRange(b, monitorsIndex, monitorsIndex + monitorsSize);
+	    for (int i = 0; i < monitorsSize; i++) {
+	    	r[monitorsIndex + i] = monitorsRed[(i + cco.monitorsOffset) % monitorsSize];
+	    	g[monitorsIndex + i] = monitorsGreen[(i + cco.monitorsOffset) % monitorsSize];
+	    	b[monitorsIndex + i] = monitorsBlue[(i + cco.monitorsOffset) % monitorsSize];
+	    }
+
+
+	    IndexColorModel defaultColorModel = new IndexColorModel(8, 256, r, g, b, a);
+	    return defaultColorModel;
+
+	}
 
 	private static byte[] getDefaultColorModelRedComponents() {
 		byte[] r =  new byte[256];

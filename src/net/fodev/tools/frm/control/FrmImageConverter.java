@@ -18,13 +18,14 @@ import javax.imageio.ImageIO;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import net.fodev.tools.frm.model.ColorCycleOffset;
 import net.fodev.tools.frm.model.FoPalette;
 
 public class FrmImageConverter {
 	public static Image getJavaFXImage(byte[] rawPixels, int width, int height, int offset, boolean hasBackground) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			ImageIO.write((RenderedImage) createBufferedImage(rawPixels, width, height, offset, hasBackground), "png", out);
+			ImageIO.write((RenderedImage) createBufferedImage(rawPixels, width, height, offset, null, hasBackground), "png", out);
 			out.flush();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -33,17 +34,40 @@ public class FrmImageConverter {
 		return new javafx.scene.image.Image(in);
 	}
 
-	private static BufferedImage createBufferedImage(byte[] pixels, int width, int height, int offset, boolean hasBackground) {
-		SampleModel sm = getIndexSampleModel(width, height, hasBackground);
+	public static Image getJavaFXImageWithColorCycle(byte[] rawPixels, int width, int height, int offset, ColorCycleOffset colorCycleOffset, boolean hasBackground) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			ImageIO.write((RenderedImage) createBufferedImage(rawPixels, width, height, offset, colorCycleOffset, hasBackground), "png", out);
+			out.flush();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+		return new javafx.scene.image.Image(in);
+
+	}
+
+	private static BufferedImage createBufferedImage(byte[] pixels, int width, int height, int offset, ColorCycleOffset cco, boolean hasBackground) {
+		SampleModel sm = getIndexSampleModel(width, height, cco, hasBackground);
 		DataBuffer db = new DataBufferByte(pixels, width * height * 2, offset);
 		WritableRaster raster = Raster.createWritableRaster(sm, db, null);
-		IndexColorModel cm = FoPalette.getDefaultColorModel(hasBackground);
+		IndexColorModel cm;
+		if (cco == null) {
+			cm = FoPalette.getDefaultColorModel(hasBackground);
+		} else {
+			cm = FoPalette.getAnimatedDefaultColorModel(cco, hasBackground);
+		}
 		BufferedImage image = new BufferedImage(cm, raster, false, null);
 		return image;
 	}
 
-	private static SampleModel getIndexSampleModel(int width, int height, boolean hasBackground) {
-		IndexColorModel icm = FoPalette.getDefaultColorModel(hasBackground);
+	private static SampleModel getIndexSampleModel(int width, int height, ColorCycleOffset cco, boolean hasBackground) {
+		IndexColorModel icm;
+		if (cco == null) {
+			icm = FoPalette.getDefaultColorModel(hasBackground);
+		} else {
+			icm = FoPalette.getAnimatedDefaultColorModel(cco, hasBackground);
+		}
 		WritableRaster wr = icm.createCompatibleWritableRaster(1, 1);
 		SampleModel sampleModel = wr.getSampleModel();
 		sampleModel = sampleModel.createCompatibleSampleModel(width, height);

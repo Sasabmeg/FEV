@@ -13,7 +13,7 @@ public class FrmTileSelectorTest {
 		fileList.add("f:\\crittters\\HFJMPSEA.FRM");
 		fileList.add("f:\\crittters\\HANPWRGC.FRM");
 		fileList.add("f:\\crittters\\HANPWRGB.FRM");
-		selector.setFileList(fileList);
+		//selector.setFileList(fileList);
 		selector.prev();
 	}
 }

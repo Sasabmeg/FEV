@@ -8,36 +8,30 @@ public class FrmFileSelector {
 	private String currentFolder;
 	private String currentExportFolder;
 	private List<String> fileList;
+	private List<String> filteredList;
 	private int index = 0;
 	private String mask = "*.frm";
 
 	public FrmFileSelector() {
 	}
-
-	public void setFileList(List<String> list) {
-		fileList = list;
-	}
-
 	public void setCurrentFolder(String folder) {
 		currentFolder = folder;
 		fileList = getFilesInFolder(folder);
+		filteredList = getFilteredList(fileList);
 	}
-
 	public String getCurrentFolder() {
 		return currentFolder;
 	}
-
 	public boolean isFileListEmpty() {
 		return fileList.isEmpty();
 	}
-
 	private List<String> getFilesInFolder(String path) {
 		List<String> fileList = new ArrayList<String>();
 		try {
 			File folder = new File(path);
 			for (File fileEntry : folder.listFiles()) {
 				if (fileEntry.isDirectory()) {
-					// recursive call?
+					// recursive call? Nah
 				} else {
 					fileList.add(fileEntry.getName());
 				}
@@ -45,12 +39,22 @@ public class FrmFileSelector {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		// fileList.sort(null);
 		return fileList;
 	}
 
+	private List<String> getFilteredList(List<String> list) {
+		List<String> filtered = new ArrayList<String>();
+		String regexpMatch = mask.replace(".", "\\.").replace("*", ".*").toLowerCase();
+		for (String file : list) {
+			if (file.toLowerCase().matches(regexpMatch)) {
+				filtered.add(file);
+			}
+		}
+		return filtered;
+	}
+
 	public void setCurrentFile(String fileNameAndpath) {
-		index = fileList.indexOf(fileNameAndpath);
+		index = filteredList.indexOf(fileNameAndpath);
 		if (index < 0) {
 			index = 0;
 		}
@@ -58,77 +62,46 @@ public class FrmFileSelector {
 
 	public void setFileMask(String mask) {
 		this.mask = mask;
+		filteredList = getFilteredList(fileList);
+		index = 0;
 	}
 
 	public void prev() {
-		int oldIndex = index;
-		boolean found = false;
-		String regexpMatch = mask.replace(".", "\\.").replace("*", ".*").toLowerCase();
-		while (index > 0 && !found) {
+		if (index > 0) {
 			index--;
-			if (fileList.get(index).toLowerCase().matches(regexpMatch)) {
-				found = true;
-			}
-		}
-		if (!found) {
-			index = fileList.size();
-			while (index > oldIndex && !found) {
-				index--;
-				if (fileList.get(index).toLowerCase().matches(regexpMatch)) {
-					found = true;
-				}
-			}
 		}
 	}
 
 	public void next() {
-		int oldIndex = index;
-		boolean found = false;
-		String regexpMatch = mask.replace(".", "\\.").replace("*", ".*").toLowerCase();
-		while (index < fileList.size() - 1 && !found) {
+		if (index < filteredList.size() - 1) {
 			index++;
-			if (fileList.get(index).toLowerCase().matches(regexpMatch)) {
-				found = true;
-			}
-		}
-		if (!found) {
-			index = -1;
-			while (index < oldIndex && !found) {
-				index++;
-				if (fileList.get(index).toLowerCase().matches(regexpMatch)) {
-					found = true;
-				}
-			}
 		}
 	}
 
 	public String getCurrentFileNameAndPath() throws Exception {
-		if (index < 0 || index >= fileList.size()) {
-			throw new Exception("No files found with specific index");
+		if (index < 0 || index >= filteredList.size()) {
+			if (filteredList.size() > 0) {
+				return currentFolder + "/" + filteredList.get(0);
+			} else {
+				throw new Exception("File not found in filtered list.");
+			}
 		}
-		return currentFolder + "/" + fileList.get(index);
+		return currentFolder + "/" + filteredList.get(index);
 	}
 
 	public String getCurrentFileName() throws Exception {
-		if (index < 0 || index >= fileList.size()) {
-			throw new Exception("No files found with specific index");
+		if (index < 0 || index >= filteredList.size()) {
+			if (filteredList.size() > 0) {
+				return currentFolder + "/" + filteredList.get(0);
+			} else {
+				throw new Exception("File not found in filtered list.");
+			}
 		}
-		return fileList.get(index);
-	}
-
-	public int getTotalFilesInList() {
-		return fileList.size();
+		return filteredList.get(index);
 	}
 
 	public int getMatchingFilesInList() {
-		int ret = 0;
-		String regexpMatch = mask.replace(".", "\\.").replace("*", ".*").toLowerCase();
-		for (String filename : fileList) {
-			if (filename.toLowerCase().matches(regexpMatch)) {
-				ret++;
-			}
-		}
-		return ret;
+		return filteredList.size();
 	}
 
 	public boolean isCurrentFileMatchingPattern() {
@@ -137,13 +110,7 @@ public class FrmFileSelector {
 	}
 
 	public void firstMatchingPattern() {
-		String regexpMatch = mask.replace(".", "\\.").replace("*", ".*").toLowerCase();
-		for (int i = 0; i < fileList.size(); i++) {
-			if (fileList.get(i).toLowerCase().matches(regexpMatch)) {
-				index = i;
-				return;
-			}
-		}
+		index = 0;
 	}
 
 	public String getCurrentExportFolder() {
@@ -152,5 +119,9 @@ public class FrmFileSelector {
 
 	public void setCurrentExportFolder(String currentExportFolder) {
 		this.currentExportFolder = currentExportFolder;
+	}
+
+	public int getCurrentIndex() {
+		return index;
 	}
 }

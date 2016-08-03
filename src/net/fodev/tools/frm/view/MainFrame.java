@@ -83,7 +83,7 @@ public class MainFrame extends Application {
 	private final double minZoomValue = 0.25;
 	private final double maxZoomValue = 5;
 	private final double zoomStep = 1.125;
-	private boolean autoColorCycle =  false;
+	private boolean autoColorCycle = false;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -194,8 +194,8 @@ public class MainFrame extends Application {
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.toString());
 						String fileName = fileSelector.getCurrentFileName();
-						FrmExporter.exportAnimationToFile((FrmHeader)frameSelector.getHeader(), file.toString(), fileName,
-								frameSelector.isHasBackground());
+						FrmExporter.exportAnimationToFile((FrmHeader) frameSelector.getHeader(), file.toString(),
+								fileName, frameSelector.isHasBackground());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -299,6 +299,8 @@ public class MainFrame extends Application {
 				try {
 					File file = fileChooser.showOpenDialog(primaryStage);
 					if (file != null) {
+						fileMaskInput.setText("*.frm");
+						fileSelector.setFileMask("*.frm");
 						fileSelector.setCurrentFolder(file.getParent());
 						fileSelector.setCurrentFile(file.getName());
 						showCurrentFrame(true);
@@ -353,13 +355,10 @@ public class MainFrame extends Application {
 			public void handle(ActionEvent arg0) {
 				fileSelector.setFileMask(fileMaskInput.getText());
 				updateFileMaskLabel();
-				if (!fileSelector.isCurrentFileMatchingPattern()) {
-					fileSelector.firstMatchingPattern();
-					try {
-						showCurrentFrame(true);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				try {
+					showCurrentFrame(true);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -690,25 +689,30 @@ public class MainFrame extends Application {
 		});
 	}
 
-	private void showCurrentFrame(boolean reloadImage) throws Exception {
-		stopAnimation();
-		if (reloadImage) {
-			frameSelector.readHeaderFromFile(fileSelector.getCurrentFileNameAndPath());
-			image = frameSelector.getImage();
-		}
-		scaleImageViewForImage(image.getWidth(), image.getHeight());
-
-		frameView.setImage(image);
-		if (autoAnimation) {
-			playAnimation();
-		} else {
-			if (autoColorCycle ) {
-				playColorCycleAnimation();
+	private void showCurrentFrame(boolean reloadImage) {
+		try {
+			stopAnimation();
+			if (reloadImage) {
+				frameSelector.readHeaderFromFile(fileSelector.getCurrentFileNameAndPath());
+				image = frameSelector.getImage();
 			}
+			scaleImageViewForImage(image.getWidth(), image.getHeight());
+
+			frameView.setImage(image);
+			if (autoAnimation) {
+				playAnimation();
+			} else {
+				if (autoColorCycle) {
+					playColorCycleAnimation();
+				}
+			}
+			updatePathLabel();
+			updateFileMaskLabel();
+			updateFrameInfoText();
+		} catch (Exception e) {
+			fileMaskLabel.setText("No files found with the specified mask.");
+			//e.printStackTrace();
 		}
-		updatePathLabel();
-		updateFileMaskLabel();
-		updateFrameInfoText();
 	}
 
 	private void scaleImageViewForImage(double width, double height) {
@@ -751,12 +755,18 @@ public class MainFrame extends Application {
 		frameInfoText.setText(text);
 	}
 
-	private void updatePathLabel() throws Exception {
-		filePathLabel.setText(fileSelector.getCurrentFileNameAndPath());
+	private void updatePathLabel() {
+		try {
+			filePathLabel.setText(fileSelector.getCurrentFileNameAndPath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void updateFileMaskLabel() {
-		fileMaskLabel.setText(fileSelector.getMatchingFilesInList() + " / " + fileSelector.getTotalFilesInList());
+		String info = "Current index " + (fileSelector.getCurrentIndex() + 1) + " / "
+				+ fileSelector.getMatchingFilesInList();
+		fileMaskLabel.setText(info);
 	}
 
 	private void setScene(Stage primaryStage) {

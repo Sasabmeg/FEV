@@ -2,12 +2,13 @@ package net.fodev.tools.frm.control;
 
 import javafx.scene.image.Image;
 import net.fodev.tools.frm.model.ColorCycleOffset;
+import net.fodev.tools.frm.model.Frame;
 import net.fodev.tools.frm.model.FrmFrame;
-import net.fodev.tools.frm.model.FrmHeader;
+import net.fodev.tools.frm.model.Header;
 
 public class FrameSelector {
 	final private static int defaultFramesPerSecond = 8;
-	private FrmHeader header;
+	private Header header;
 	private int direction = 0;
 	private int frameOffset = 0;
 	private boolean hasBackground;
@@ -62,12 +63,12 @@ public class FrameSelector {
 		return currentFrameIndex;
 	}
 
-	public FrmFrame getCurrentFrame() {
+	public Frame getCurrentFrame() {
 		return header.getFrame(getCurrentFrameIndex());
 	}
 
 	public Image getImage() {
-		FrmFrame frame = header.getFrame(getCurrentFrameIndex());
+		Frame frame = header.getFrame(getCurrentFrameIndex());
 		Image image = frame.getImage(getCurrentFrameIndex(), hasBackground);
 		return image;
 	}
@@ -84,7 +85,7 @@ public class FrameSelector {
 			currentFrameIndex = 0;
 		}
 		for (int i = 0; i < framesPerDirection; i++) {
-			FrmFrame frame = header.getFrame(currentFrameIndex + i);
+			Frame frame = header.getFrame(currentFrameIndex + i);
 			images[i] = frame.getImage(currentFrameIndex + i, hasBackground);
 		}
 		return images;
@@ -95,16 +96,12 @@ public class FrameSelector {
 		images = new Image[5];
 		ColorCycleOffset cco =  new ColorCycleOffset();
 		for (int i = 0; i < 5; i++) {
-			FrmFrame frame = header.getFrame(0);
+			FrmFrame frame = (FrmFrame)header.getFrame(0);
 			images[i] = FrmImageConverter.getJavaFXImageWithColorCycle(frame.getData(), frame.getWidth(), frame.getHeight(),
 					frame.getFrameOffset(0), cco, hasBackground);
 			cco.step();
 		}
 		return images;
-	}
-
-	public int getFrameOffsetIndex() {
-		return header.getFrame(getCurrentFrameIndex()).getFrameOffset(getCurrentFrameIndex());
 	}
 
 	public int getFrameIndex() {
@@ -135,7 +132,7 @@ public class FrameSelector {
 		return header.getFramesPerSecond() > 0 ? header.getFramesPerSecond() : defaultFramesPerSecond;
 	}
 
-	public FrmHeader getHeader() {
+	public Header getHeader() {
 		return header;
 	}
 }

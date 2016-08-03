@@ -40,6 +40,7 @@ import javafx.util.Duration;
 import net.fodev.tools.frm.control.FrameSelector;
 import net.fodev.tools.frm.control.FrmExporter;
 import net.fodev.tools.frm.control.FrmFileSelector;
+import net.fodev.tools.frm.model.FrmHeader;
 
 public class MainFrame extends Application {
 	private FrmFileSelector fileSelector;
@@ -193,11 +194,8 @@ public class MainFrame extends Application {
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.toString());
 						String fileName = fileSelector.getCurrentFileName();
-						FrmExporter.exportAnimationToFile(frameSelector.getHeader(), file.toString(), fileName,
+						FrmExporter.exportAnimationToFile((FrmHeader)frameSelector.getHeader(), file.toString(), fileName,
 								frameSelector.isHasBackground());
-						// FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(),
-						// frameSelector.getCurrentFrameIndex(),
-						// file.toString());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -749,7 +747,6 @@ public class MainFrame extends Application {
 		text += "Index: " + frameSelector.getCurrentFrameIndex() + System.lineSeparator();
 		text += "Direction: " + frameSelector.getDirection() + System.lineSeparator();
 		text += "Offset index: " + frameSelector.getFrameIndex() + System.lineSeparator();
-		text += "Offset: " + frameSelector.getFrameOffsetIndex() + System.lineSeparator();
 		text += frameSelector.getFrameInfo();
 		frameInfoText.setText(text);
 	}

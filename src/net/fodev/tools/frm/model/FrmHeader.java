@@ -1,26 +1,21 @@
 package net.fodev.tools.frm.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class FrmHeader {
+public class FrmHeader extends Header {
 	private int version;					//	unsigned
-	private short framesPerSecond;			//	unsigned
 	private short actionFrame;				//	unsigned
-	private short framesPerDirection;		//	unsigned
 	private short directionSwitchX[];		//	signed, size 6
 	private short directionSwitchY[];		//	signed, size 6
 	private int directionDataOffset[];		//	signed, size 6
 	private int frameDataSize;				//	unsigned
-	private List<FrmFrame> frames;
 
 	public FrmHeader() {
 		directionSwitchX = new short[6];
 		directionSwitchY = new short[6];
 		directionDataOffset = new int[6];
-		frames = new ArrayList<FrmFrame>();
+		frames = new ArrayList<Frame>();
 	}
-
 	public int getVersion() {
 		return version;
 	}
@@ -28,28 +23,12 @@ public class FrmHeader {
 		this.version = version;
 		return version;
 	}
-
-	public short getFramesPerSecond() {
-		return framesPerSecond;
-	}
-	public void setFramesPerSecond(short framesPerSecond) {
-		this.framesPerSecond = framesPerSecond;
-	}
-
 	public short getActionFrame() {
 		return actionFrame;
 	}
 	public void setActionFrame(short actionFrame) {
 		this.actionFrame = actionFrame;
 	}
-
-	public short getFramesPerDirection() {
-		return framesPerDirection;
-	}
-	public void setFramesPerDirection(short framesPerDirection) {
-		this.framesPerDirection = framesPerDirection;
-	}
-
 	public short getDirectionSwitchX(int index) {
 		if (index < 0 || index > 5) {
 			throw new IndexOutOfBoundsException("Cannot get index " + index + " for direction switch X array. Must be between 0 and 5.");
@@ -95,20 +74,6 @@ public class FrmHeader {
 	public void setFrameDataSize(int frameDataSize) {
 		this.frameDataSize = frameDataSize;
 	}
-
-	public FrmFrame getFrame(int index) {
-		if (index < 0 || index >= frames.size()) {
-			throw new IndexOutOfBoundsException("Cannot get index " + index + " for frame list. Curent size of list is: " + frames.size());
-		}
-		return frames.get(index);
-	}
-	public void addFrame(FrmFrame frame) {
-		frames.add(frame);
-	}
-	public int getTotalFrames() {
-		return frames.size();
-	}
-
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Version: " + getVersion() + System.lineSeparator());

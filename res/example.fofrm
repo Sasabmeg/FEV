@@ -7,65 +7,23 @@ offs_y=25
 [dir_0]
 frm_0=NE0.png
 frm_1=NE1.png
-frm_2=NE2.png
-frm_3=NE3.png
-frm_4=NE4.png
-frm_5=NE5.png
-frm_6=NE6.png
-frm_7=NE7.png
-frm_8=NE8.png
 
 [dir_1]
 frm_0=E0.png
 frm_1=E1.png
-frm_2=E2.png
-frm_3=E3.png
-frm_4=E4.png
-frm_5=E5.png
-frm_6=E6.png
-frm_7=E7.png
-frm_8=E8.png
 
 [dir_2]
 frm_0=SE0.png
 frm_1=SE1.png
-frm_2=SE2.png
-frm_3=SE3.png
-frm_4=SE4.png
-frm_5=SE5.png
-frm_6=SE6.png
-frm_7=SE7.png
-frm_8=SE8.png
 
 [dir_3]
 frm_0=SW0.png
 frm_1=SW1.png
-frm_2=SW2.png
-frm_3=SW3.png
-frm_4=SW4.png
-frm_5=SW5.png
-frm_6=SW6.png
-frm_7=SW7.png
-frm_8=SW8.png
 
 [dir_4]
 frm_0=W0.png
 frm_1=W1.png
-frm_2=W2.png
-frm_3=W3.png
-frm_4=W4.png
-frm_5=W5.png
-frm_6=W6.png
-frm_7=W7.png
-frm_8=W8.png
 
 [dir_5]
 frm_0=NW0.png
 frm_1=NW1.png
-frm_2=NW2.png
-frm_3=NW3.png
-frm_4=NW4.png
-frm_5=NW5.png
-frm_6=NW6.png
-frm_7=NW7.png
-frm_8=NW8.png

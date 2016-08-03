@@ -9,11 +9,12 @@ import javax.imageio.ImageIO;
 
 import javafx.scene.image.Image;
 import net.fodev.tools.frm.model.FoPalette;
+import net.fodev.tools.frm.model.Frame;
 import net.fodev.tools.frm.model.FrmFrame;
 import net.fodev.tools.frm.model.FrmHeader;
 
 public class FrmExporter {
-	public static void exportSingleFrameToFile(FrmFrame frame, int currentIndex, String filename, boolean hasBackground) throws IOException {
+	public static void exportSingleFrameToFile(Frame frame, int currentIndex, String filename, boolean hasBackground) throws IOException {
 		Image image = frame.getImage(currentIndex, hasBackground);
 		FrmImageConverter.writeImageToBmpFile(image, filename);
 	}
@@ -23,8 +24,8 @@ public class FrmExporter {
 		new File(newFolderName).mkdirs();
 		for (int direction = 0; direction < header.getTotalFrames() / header.getFramesPerDirection(); direction++) {
 			for (int index = 0; index < header.getFramesPerDirection(); index++) {
-				FrmFrame frame = header.getFrame(direction * header.getFramesPerDirection() + index);
-				exportSingleFrameToFile(frame, 0, newFolderName + "/" + direction + "_" + index + ".png", hasBackground);
+				Frame frame = header.getFrame(direction * header.getFramesPerDirection() + index);
+				exportSingleFrameToFile((FrmFrame)frame, 0, newFolderName + "/" + direction + "_" + index + ".png", hasBackground);
 			}
 		}
 	}

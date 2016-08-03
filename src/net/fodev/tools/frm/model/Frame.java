@@ -1,6 +1,8 @@
 package net.fodev.tools.frm.model;
 
-public class Frame {
+import javafx.scene.image.Image;
+
+public abstract class Frame {
 	protected short width;			//	unsigned
 	protected short height;			//	unsigned
 	protected int	dataSize;		//	unsigned
@@ -50,4 +52,5 @@ public class Frame {
 		sb.append("OffsetY: " + getOffsetY() + System.lineSeparator());
 		return sb.toString();
 	}
+	public abstract Image getImage(int currentFrameIndex, boolean hasBackground);
 }

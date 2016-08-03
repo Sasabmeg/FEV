@@ -68,8 +68,7 @@ public class FrameSelector {
 
 	public Image getImage() {
 		FrmFrame frame = header.getFrame(getCurrentFrameIndex());
-		Image image = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
-				frame.getFrameOffset(getCurrentFrameIndex()), hasBackground);
+		Image image = frame.getImage(getCurrentFrameIndex(), hasBackground);
 		return image;
 	}
 
@@ -86,8 +85,7 @@ public class FrameSelector {
 		}
 		for (int i = 0; i < framesPerDirection; i++) {
 			FrmFrame frame = header.getFrame(currentFrameIndex + i);
-			images[i] = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
-					frame.getFrameOffset(currentFrameIndex + i), hasBackground);
+			images[i] = frame.getImage(currentFrameIndex + i, hasBackground);
 		}
 		return images;
 	}

@@ -14,8 +14,7 @@ import net.fodev.tools.frm.model.FrmHeader;
 
 public class FrmExporter {
 	public static void exportSingleFrameToFile(FrmFrame frame, int currentIndex, String filename, boolean hasBackground) throws IOException {
-		Image image = FrmImageConverter.getJavaFXImage(frame.getData(), frame.getWidth(), frame.getHeight(),
-				frame.getFrameOffset(currentIndex), hasBackground);
+		Image image = frame.getImage(currentIndex, hasBackground);
 		FrmImageConverter.writeImageToBmpFile(image, filename);
 	}
 

@@ -124,4 +124,36 @@ public class FrmFileSelector {
 	public int getCurrentIndex() {
 		return index;
 	}
+	public void prevSkin() {
+		try {
+			String prefix = getCurrentFileName().substring(0,  4);
+			int i = index - 1;
+			boolean found = false;
+			while (i > 0 && !found) {
+				if (!filteredList.get(i).startsWith(prefix)) {
+					found = true;
+					index = i;
+				}
+				i--;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void nextSkin() {
+		try {
+			String prefix = getCurrentFileName().substring(0,  4);
+			int i = index + 1;
+			boolean found = false;
+			while (i < filteredList.size() && !found) {
+				if (!filteredList.get(i).startsWith(prefix)) {
+					found = true;
+					index = i;
+				}
+				i++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

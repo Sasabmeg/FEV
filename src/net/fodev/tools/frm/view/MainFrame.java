@@ -636,6 +636,16 @@ public class MainFrame extends Application {
 	private void addKeybinds() {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(final KeyEvent keyEvent) {
+				if (keyEvent.getCode() == KeyCode.PAGE_UP) {
+					fileSelector.prevSkin();
+					showCurrentFrame(true);
+					keyEvent.consume();
+				}
+				if (keyEvent.getCode() == KeyCode.PAGE_DOWN) {
+					fileSelector.nextSkin();
+					showCurrentFrame(true);
+					keyEvent.consume();
+				}
 				if (keyEvent.getCode() == KeyCode.UP) {
 					nextFrameButton.fire();
 					keyEvent.consume();

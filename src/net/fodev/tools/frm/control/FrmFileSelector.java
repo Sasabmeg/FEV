@@ -126,13 +126,26 @@ public class FrmFileSelector {
 	}
 	public void prevSkin() {
 		try {
-			String prefix = getCurrentFileName().substring(0,  4);
+			String prefix = getCurrentFileName().substring(0,  5);
 			int i = index - 1;
 			boolean found = false;
-			while (i > 0 && !found) {
+			while (i >= 0 && !found) {
 				if (!filteredList.get(i).startsWith(prefix)) {
 					found = true;
 					index = i;
+					String nextPrefix = filteredList.get(i).substring(0, 5);
+					boolean first = false;
+					while (i > 0 && !first) {
+						i--;
+						if (!filteredList.get(i).startsWith(nextPrefix)) {
+							index = i + 1;
+							first = true;
+						}
+						if (i == 0) {
+							index = 0;
+							first = true;
+						}
+					}
 				}
 				i--;
 			}

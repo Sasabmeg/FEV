@@ -1,11 +1,16 @@
 package net.fodev.tools.frm.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Header {
 	protected short framesPerSecond;			//	unsigned
 	protected short framesPerDirection;			//	unsigned
 	protected List<Frame> frames;
+
+	public Header() {
+		frames = new ArrayList<Frame>();
+	}
 
 	public short getFramesPerSecond() {
 		return framesPerSecond;
@@ -19,10 +24,13 @@ public class Header {
 	public void setFramesPerDirection(short framesPerDirection) {
 		this.framesPerDirection = framesPerDirection;
 	}
-	public void addFrame(FrmFrame frame) {
+	public void addFrame(Frame frame) {
 		frames.add(frame);
 	}
 	public Frame getFrame(int index) {
+		if (frames == null) {
+			throw new NullPointerException("Frames list is not initialized.");
+		}
 		if (index < 0 || index >= frames.size()) {
 			throw new IndexOutOfBoundsException("Cannot get index " + index + " for frame list. Curent size of list is: " + frames.size());
 		}

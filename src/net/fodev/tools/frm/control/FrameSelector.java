@@ -41,7 +41,13 @@ public class FrameSelector {
 	}
 
 	public void readHeaderFromFile(String currentFile) {
-		header = FrmFileReader.readFrm(currentFile);
+		String extension = FrmUtils.getFileExtension(currentFile).toLowerCase();
+		if (extension.equals("frm")) {
+			header = FrmFileReader.readFrm(currentFile);
+		}
+		if (extension.equals("fofrm")) {
+			header = FofrmFileReader.readFofrm(currentFile);
+		}
 	}
 
 	public int getFramesPerDirection() {
@@ -68,12 +74,18 @@ public class FrameSelector {
 	}
 
 	public Image getImage() {
-		Frame frame = header.getFrame(getCurrentFrameIndex());
-		Image image = frame.getImage(getCurrentFrameIndex(), hasBackground);
-		return image;
+		try {
+			Frame frame = header.getFrame(getCurrentFrameIndex());
+			Image image = frame.getImage(getCurrentFrameIndex(), hasBackground);
+			return image;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
 	}
 
 	public Image[] getImagesForAnimation() {
+		try {
 		Image[] images;
 		int framesPerDirection = header.getFramesPerDirection();
 		images = new Image[framesPerDirection];
@@ -89,16 +101,20 @@ public class FrameSelector {
 			images[i] = frame.getImage(currentFrameIndex + i, hasBackground);
 		}
 		return images;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
 	}
 
 	public Image[] getImagesForColorCycleAnimation() {
 		Image[] images;
 		images = new Image[5];
-		ColorCycleOffset cco =  new ColorCycleOffset();
+		ColorCycleOffset cco = new ColorCycleOffset();
 		for (int i = 0; i < 5; i++) {
-			FrmFrame frame = (FrmFrame)header.getFrame(0);
-			images[i] = FrmImageConverter.getJavaFXImageWithColorCycle(frame.getData(), frame.getWidth(), frame.getHeight(),
-					frame.getFrameOffset(0), cco, hasBackground);
+			FrmFrame frame = (FrmFrame) header.getFrame(0);
+			images[i] = FrmImageConverter.getJavaFXImageWithColorCycle(frame.getData(), frame.getWidth(),
+					frame.getHeight(), frame.getFrameOffset(0), cco, hasBackground);
 			cco.step();
 		}
 		return images;

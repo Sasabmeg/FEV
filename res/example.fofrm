@@ -1,11 +1,17 @@
-fps=30
-count=9
+fps=10
+count=2
 
 offs_x=0
 offs_y=25
 
 [dir_0]
+offs_x=1
+offs_y=2
+next_x=3
+next_y=4
 frm_0=NE0.png
+next_x=5
+next_y=6
 frm_1=NE1.png
 
 [dir_1]

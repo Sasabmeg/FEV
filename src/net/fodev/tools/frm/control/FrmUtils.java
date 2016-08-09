@@ -11,4 +11,11 @@ public class FrmUtils {
 		}
 		return extension;
 	}
+
+	public static String getParentDir(String filenameAndPath) {
+		String parent = "";
+		int i = Math.max(filenameAndPath.lastIndexOf('\\'), filenameAndPath.lastIndexOf('/'));
+		parent = filenameAndPath.substring(0, i + 1);
+		return parent;
+	}
 }

@@ -15,8 +15,13 @@ import net.fodev.tools.frm.model.FrmHeader;
 
 public class FrmExporter {
 	public static void exportSingleFrameToFile(Frame frame, int currentIndex, String filename, boolean hasBackground) throws IOException {
-		Image image = frame.getImage(currentIndex, hasBackground);
-		FrmImageConverter.writeImageToBmpFile(image, filename);
+		try {
+			Image image = frame.getImage(currentIndex, hasBackground);
+			FrmImageConverter.writeImageToBmpFile(image, filename);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return;
+		}
 	}
 
 	public static void exportAnimationToFile(FrmHeader header, String folderName, String frameFileName, boolean hasBackground) throws IOException {

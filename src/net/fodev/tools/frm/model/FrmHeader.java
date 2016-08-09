@@ -76,6 +76,7 @@ public class FrmHeader extends Header {
 	}
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append("Format: frm" + System.lineSeparator());
 		sb.append("Version: " + getVersion() + System.lineSeparator());
 		sb.append("Frames per second: " + getFramesPerSecond() + System.lineSeparator());
 		sb.append("Action frame index: " + getActionFrame() + System.lineSeparator());

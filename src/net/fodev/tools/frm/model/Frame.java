@@ -52,5 +52,5 @@ public abstract class Frame {
 		sb.append("OffsetY: " + getOffsetY() + System.lineSeparator());
 		return sb.toString();
 	}
-	public abstract Image getImage(int currentFrameIndex, boolean hasBackground);
+	public abstract Image getImage(int currentFrameIndex, boolean hasBackground) throws Exception;
 }

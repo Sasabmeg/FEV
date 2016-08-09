@@ -1,0 +1,56 @@
+# 
+# Specification .fofrm 
+# 
+# 
+# fps to 
+# the Frame Per of Second, the number of frames per second. 
+# An integer, unsigned. Not Required. 
+# Default - 10. 
+# 
+# the count 
+# The number of frames in the animation. 
+# An integer, unsigned. 
+# Default - 1. 
+# 
+# offs_x 
+# offs_y 
+. # Basic offset 
+# This shift is necessary to ensure that staff They are properly centered. 
+# used when the frame is displayed, since its logical center is not always the same as 
+# with its absolute center (width / 2, height / 2). Naprmer center creatures will position his feet, 
+# while the center of the tree will be its base. 
+# A positive value for offs_x means that when displaying the frame will be moved to the right. 
+# A positive value for offs_y means that the frame under the map will be shifted down. 
+# Integer landmark. Not Required. 
+# Default - 0. 
+# 
+# [? Dir_] 
+# blocks before animation frames descriptions put the direction of the animation. 
+#? this direction, in the range from 0 to 5. 
+# The frames without regard to the direction it may be omitted. 
+# The following are descriptions of the elements of the animation block. 
+# 
+# offs_x 
+# offs_y 
+# Offset for directions. If they are not specified, the global base offsets are taken. 
+# Integer landmark. Not Required. 
+# The default - value base of global * offs_. 
+# 
+# Next_x_? 
+# Next_y_? 
+# Offset frame relative to the previous frame. ? is the frame number. * 
+# Integer landmark. Not Required. 
+# Default - 0. 
+# 
+# frm_? 
+# Image file name. ? is the frame number. * 
+# For the first frame number is not required, ie, a "of frm = ...". 
+# must include the path to the current folder. 
+# string. Required. 
+# 
+# * The numbers must start at 0 and go step by step. 
+#
+Added ability to set the overall frame offsets for each of the areas. If the data is not found, then taken global.
+Extended specification. Now for animations without directions (or zero direction) indicate the beginning of the block "[dir_0]" is not necessary. 
+It is also not necessary to specify the first frame in the animation of its number, ie, You can not "frm_0 = ...", but simply "of frm = ...". 
+"the count" is no longer a required parameter, the default - 1.

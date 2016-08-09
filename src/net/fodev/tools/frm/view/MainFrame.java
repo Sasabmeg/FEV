@@ -287,7 +287,9 @@ public class MainFrame extends Application {
 			public void handle(ActionEvent arg0) {
 				FileChooser fileChooser = new FileChooser();
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("FRM files (*.frm)", "*.frm");
+				FileChooser.ExtensionFilter extFilterFofrm = new FileChooser.ExtensionFilter("FOFRM files (*.fofrm)", "*.fofrm");
 				fileChooser.getExtensionFilters().add(extFilter);
+				fileChooser.getExtensionFilters().add(extFilterFofrm);
 				if (!fileSelector.isFileListEmpty()) {
 					Path p = Paths.get(fileSelector.getCurrentFolder());
 					try {

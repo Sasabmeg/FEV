@@ -119,11 +119,4 @@ public class FrmFileReader {
 			header.setDirectionDataOffset(i, dis.readInt());
 		}
 	}
-
-	public static void main(String[] args) {
-		String file = "res/action.frm";
-		FrmHeader header = readFrm(file);
-		System.out.println(header.toString());
-		System.out.println(header.getFrame(0).toString());
-	}
 }

@@ -19,11 +19,4 @@ public class FofrmFrame extends Frame {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	@Override
-	public Image getImage(int currentFrameIndex, boolean hasBackground) throws Exception {
-		if (currentFrameIndex < 0 || currentFrameIndex >= 1) {
-			throw new Exception("Index out of bounds at FofrmFrame: " + currentFrameIndex);
-		}
-		return data;
-	}
 }

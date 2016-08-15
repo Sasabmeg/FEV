@@ -9,14 +9,12 @@ import javax.imageio.ImageIO;
 
 import javafx.scene.image.Image;
 import net.fodev.tools.frm.model.FoPalette;
-import net.fodev.tools.frm.model.Frame;
-import net.fodev.tools.frm.model.FrmFrame;
-import net.fodev.tools.frm.model.FrmHeader;
+import net.fodev.tools.frm.model.Header;
 
 public class FrmExporter {
-	public static void exportSingleFrameToFile(Frame frame, int currentIndex, String filename, boolean hasBackground) throws IOException {
+	public static void exportSingleFrameToFile(Header header, int direction, int frameIndex, String filename, boolean hasBackground) throws IOException {
 		try {
-			Image image = frame.getImage(currentIndex, hasBackground);
+			Image image = header.getImage(direction, frameIndex, hasBackground);
 			FrmImageConverter.writeImageToBmpFile(image, filename);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -24,13 +22,12 @@ public class FrmExporter {
 		}
 	}
 
-	public static void exportAnimationToFile(FrmHeader header, String folderName, String frameFileName, boolean hasBackground) throws IOException {
+	public static void exportAnimationToFile(Header header, String folderName, String frameFileName, boolean hasBackground) throws IOException {
 		String newFolderName = folderName + "/" + frameFileName;
 		new File(newFolderName).mkdirs();
 		for (int direction = 0; direction < header.getTotalFrames() / header.getFramesPerDirection(); direction++) {
 			for (int index = 0; index < header.getFramesPerDirection(); index++) {
-				Frame frame = header.getFrame(direction * header.getFramesPerDirection() + index);
-				exportSingleFrameToFile((FrmFrame)frame, 0, newFolderName + "/" + direction + "_" + index + ".png", hasBackground);
+				exportSingleFrameToFile(header, direction, index, newFolderName + "/" + direction + "_" + index + ".png", hasBackground);
 			}
 		}
 	}

@@ -75,8 +75,7 @@ public class FrameSelector {
 
 	public Image getImage() {
 		try {
-			Frame frame = header.getFrame(getCurrentFrameIndex());
-			Image image = frame.getImage(getCurrentFrameIndex(), hasBackground);
+			Image image = header.getImage(direction, frameOffset, hasBackground);
 			return image;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -89,16 +88,8 @@ public class FrameSelector {
 		Image[] images;
 		int framesPerDirection = header.getFramesPerDirection();
 		images = new Image[framesPerDirection];
-		int totalFrames = header.getTotalFrames();
-		int currentFrameIndex;
-		if (direction + 1 <= totalFrames / framesPerDirection) {
-			currentFrameIndex = framesPerDirection * direction;
-		} else {
-			currentFrameIndex = 0;
-		}
 		for (int i = 0; i < framesPerDirection; i++) {
-			Frame frame = header.getFrame(currentFrameIndex + i);
-			images[i] = frame.getImage(currentFrameIndex + i, hasBackground);
+			images[i] = header.getImage(direction, i, hasBackground);
 		}
 		return images;
 		} catch (Exception ex) {
@@ -114,7 +105,7 @@ public class FrameSelector {
 		for (int i = 0; i < 5; i++) {
 			FrmFrame frame = (FrmFrame) header.getFrame(0);
 			images[i] = FrmImageConverter.getJavaFXImageWithColorCycle(frame.getData(), frame.getWidth(),
-					frame.getHeight(), frame.getFrameOffset(0), cco, hasBackground);
+					frame.getHeight(), 0, cco, hasBackground);
 			cco.step();
 		}
 		return images;

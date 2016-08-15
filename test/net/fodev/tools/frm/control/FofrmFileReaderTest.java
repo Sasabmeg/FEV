@@ -63,4 +63,23 @@ public class FofrmFileReaderTest {
 			ex.printStackTrace();
 		}
 	}
+
+	@Test
+	public void TestHeaderParserForThreeDirections() {
+		List<String> lines =  new ArrayList<String>();
+		lines.add("[dir_0]");
+		lines.add("frm_0=vein_iron2_1.png");
+		lines.add("[dir_1]");
+		lines.add("frm_0=vein_iron2_2.png");
+		lines.add("[dir_2]");
+		lines.add("frm_0=vein_iron2_3.png");
+		try {
+			FofrmHeader header = FofrmFileReader.parseLines(lines);
+			assertEquals("vein_iron2_1.png", ((FofrmFrame)header.getFrame(0)).getFileName());
+			assertEquals("vein_iron2_2.png", ((FofrmFrame)header.getFrame(1)).getFileName());
+			assertEquals("vein_iron2_3.png", ((FofrmFrame)header.getFrame(2)).getFileName());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }

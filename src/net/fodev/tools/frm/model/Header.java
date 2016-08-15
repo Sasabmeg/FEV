@@ -3,7 +3,9 @@ package net.fodev.tools.frm.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Header {
+import javafx.scene.image.Image;
+
+public abstract class Header {
 	protected short framesPerSecond;			//	unsigned
 	protected short framesPerDirection;			//	unsigned
 	protected List<Frame> frames;
@@ -39,4 +41,5 @@ public class Header {
 	public int getTotalFrames() {
 		return frames.size();
 	}
+	public abstract Image getImage(int direction, int frameIndex, boolean hasBackground) throws Exception;
 }

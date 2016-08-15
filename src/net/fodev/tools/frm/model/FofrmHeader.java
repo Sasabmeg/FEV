@@ -1,5 +1,7 @@
 package net.fodev.tools.frm.model;
 
+import javafx.scene.image.Image;
+
 public class FofrmHeader extends Header {
 	private int offsetX;
 	private int offsetY;
@@ -56,5 +58,11 @@ public class FofrmHeader extends Header {
 			throw new Exception("Direction is out of bounds. (0-6) -> " + dir);
 		}
 		directionDefaultOffsetY[dir] = value;
+	}
+	@Override
+	public Image getImage(int direction, int frameIndex, boolean hasBackground) throws Exception {
+		FofrmFrame frame = (FofrmFrame) getFrame(direction * framesPerDirection + frameIndex);
+		Image image = frame.getData();
+		return image;
 	}
 }

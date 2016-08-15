@@ -3,6 +3,7 @@ package net.fodev.tools.frm.view;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -233,8 +234,8 @@ public class MainFrame extends Application {
 					File file = fileChooser.showSaveDialog(primaryStage);
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.getParent());
-						FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(),
-								frameSelector.getCurrentFrameIndex(), file.toString(), frameSelector.isHasBackground());
+//						FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(),
+//								frameSelector.getCurrentFrameIndex(), file.toString(), frameSelector.isHasBackground());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

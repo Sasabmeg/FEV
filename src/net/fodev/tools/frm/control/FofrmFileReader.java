@@ -15,7 +15,7 @@ import net.fodev.tools.frm.model.FofrmHeader;
 
 public class FofrmFileReader {
 	private static final String FPS = "(^\\s*fps\\s*=\\s*)(\\d*)(\\s*$)";
-	private static final String COUNT = "(^\\s*count\\s=\\s*)(\\d*)(\\s*$)";
+	private static final String COUNT = "(^\\s*count\\s*=\\s*)(\\d*)(\\s*$)";
 	private static final String OFFSET_X = "(^\\s*offs_x\\s*=\\s*)(\\d*)(\\s*$)";
 	private static final String OFFSET_Y = "(^\\s*offs_y\\s*=\\s*)(\\d*)(\\s*$)";
 	private static final String DIR = "(^\\s*\\[dir_)(\\d*)(\\]\\s*$)";
@@ -68,7 +68,7 @@ public class FofrmFileReader {
 			pattern = Pattern.compile(COUNT, Pattern.CASE_INSENSITIVE);
 			matcher = pattern.matcher(line);
 			if (matcher.find()) {
-				header.setFramesPerDirection(Short.parseShort(matcher.group(2)));
+				//	Do nothing, useless parameter
 			}
 
 			Pattern patternOffsetX = Pattern.compile(OFFSET_X, Pattern.CASE_INSENSITIVE);
@@ -140,6 +140,12 @@ public class FofrmFileReader {
 				}
 			}
 			i++;
+		}
+		int totalFrames = header.getTotalFrames();
+		if (totalFrames < 6) {
+			header.setFramesPerDirection((short)1);
+		} else {
+			header.setFramesPerDirection((short)(header.getTotalFrames() / 6));
 		}
 		return header;
 	}

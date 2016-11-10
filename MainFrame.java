@@ -195,8 +195,14 @@ public class MainFrame extends Application {
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.toString());
 						String fileName = fileSelector.getCurrentFileName();
-						FrmExporter.exportAnimationToFile((FrmHeader) frameSelector.getHeader(), file.toString(),
+						
+						if (colorCycleCheckBox.isSelected()) {
+                            FrmExporter.exportColorCycleAnimationToFile((FrmHeader) frameSelector.getHeader(), file.toString(),
+                                    fileName, frameSelector.isHasBackground());
+						} else {					
+						    FrmExporter.exportAnimationToFile((FrmHeader) frameSelector.getHeader(), file.toString(),
 								fileName, frameSelector.isHasBackground());
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

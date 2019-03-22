@@ -210,6 +210,7 @@ public class MainFrame extends Application {
 	private void addExportSingleFrameButton(Stage primaryStage) {
 		exportFrameButton = new Button("Exp single frame");
 		exportFrameButton.setOnAction(new EventHandler<ActionEvent>() {
+			@SuppressWarnings("restriction")
 			@Override
 			public void handle(ActionEvent arg0) {
 				FileChooser fileChooser = new FileChooser();
@@ -286,6 +287,7 @@ public class MainFrame extends Application {
 		selectFileButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
+				@SuppressWarnings("restriction")
 				FileChooser fileChooser = new FileChooser();
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("FRM files (*.frm)", "*.frm");
 				FileChooser.ExtensionFilter extFilterFofrm = new FileChooser.ExtensionFilter("FOFRM files (*.fofrm)", "*.fofrm");
@@ -306,6 +308,7 @@ public class MainFrame extends Application {
 						fileSelector.setFileMask("*.frm");
 						fileSelector.setCurrentFolder(file.getParent());
 						fileSelector.setCurrentFile(file.getName());
+						fileSelector.setCurrentExportFolder(file.getParent());
 						showCurrentFrame(true);
 					}
 				} catch (Exception e) {

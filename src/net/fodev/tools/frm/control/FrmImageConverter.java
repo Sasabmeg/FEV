@@ -75,6 +75,7 @@ public class FrmImageConverter {
 	}
 
 	public static void writeImageToBmpFile(Image image, String filename) throws IOException {
+		@SuppressWarnings("restriction")
 		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 		// Remove alpha-channel from buffered image:
 		BufferedImage imageRGB = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.OPAQUE);

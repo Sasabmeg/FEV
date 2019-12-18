@@ -121,7 +121,7 @@ public class FoPalette {
 
 	private static byte[] getDefaultColorModelRedComponents() {
 		byte[] r =  new byte[256];
-	    r[0] = (byte)0;	    r[1] = (byte)236;	    r[2] = (byte)220;	    r[3] = (byte)204;
+	    r[0] = (byte)0;	    	r[1] = (byte)236;	    r[2] = (byte)220;	    r[3] = (byte)204;
 	    r[4] = (byte)188;	    r[5] = (byte)176;	    r[6] = (byte)160;	    r[7] = (byte)144;
 	    r[8] = (byte)128;	    r[9] = (byte)116;	    r[10] = (byte)100;	    r[11] = (byte)84;
 	    r[12] = (byte)72;	    r[13] = (byte)56;	    r[14] = (byte)40;	    r[15] = (byte)32;
@@ -190,7 +190,7 @@ public class FoPalette {
 
 	private static byte[] getDefaultColorModelGreenComponents() {
 		byte[] g =  new byte[256];
-		g[0] = (byte)0;		g[1] = (byte)236;		g[2] = (byte)220;		g[3] = (byte)204;
+		g[0] = (byte)0;			g[1] = (byte)236;		g[2] = (byte)220;		g[3] = (byte)204;
 		g[4] = (byte)188;		g[5] = (byte)176;		g[6] = (byte)160;		g[7] = (byte)144;
 		g[8] = (byte)128;		g[9] = (byte)116;		g[10] = (byte)100;		g[11] = (byte)84;
 		g[12] = (byte)72;		g[13] = (byte)56;		g[14] = (byte)40;		g[15] = (byte)32;

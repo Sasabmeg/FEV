@@ -195,6 +195,7 @@ public class MainFrame extends Application {
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.toString());
 						String fileName = fileSelector.getCurrentFileName();
+						System.out.println("Export folder: " + fileName);
 						FrmExporter.exportAnimationToFile((FrmHeader) frameSelector.getHeader(), file.toString(),
 								fileName, frameSelector.isHasBackground());
 					}
@@ -210,7 +211,6 @@ public class MainFrame extends Application {
 	private void addExportSingleFrameButton(Stage primaryStage) {
 		exportFrameButton = new Button("Exp single frame");
 		exportFrameButton.setOnAction(new EventHandler<ActionEvent>() {
-			@SuppressWarnings("restriction")
 			@Override
 			public void handle(ActionEvent arg0) {
 				FileChooser fileChooser = new FileChooser();
@@ -220,13 +220,13 @@ public class MainFrame extends Application {
 						"*.bmp");
 				FileChooser.ExtensionFilter extGifFilter = new FileChooser.ExtensionFilter(
 						"Graphics Intercahnge Format files (*.gif)", "*.gif");
-				fileChooser.getExtensionFilters().add(extBmpFilter);
 				fileChooser.getExtensionFilters().add(extPngFilter);
+				fileChooser.getExtensionFilters().add(extBmpFilter);
 				fileChooser.getExtensionFilters().add(extGifFilter);
 				if (!fileSelector.isFileListEmpty()) {
 					Path p = Paths.get(fileSelector.getCurrentExportFolder());
 					try {
-						fileChooser.setInitialDirectory(p.toFile());
+						fileChooser.setInitialDirectory(p.getParent().toFile());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -235,8 +235,12 @@ public class MainFrame extends Application {
 					File file = fileChooser.showSaveDialog(primaryStage);
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.getParent());
-//						FrmExporter.exportSingleFrameToFile(frameSelector.getCurrentFrame(),
-//								frameSelector.getCurrentFrameIndex(), file.toString(), frameSelector.isHasBackground());
+						System.out.println("Setting export folder to: " + file.getParent());
+						System.out.println("Export file name: " + file.toString());
+						int indexForDirection = frameSelector.getCurrentFrameIndex() % frameSelector.getFramesPerDirection();
+						System.out.println("Saving: Dir = " + frameSelector.getDirection() + ", Index = " + indexForDirection);
+						FrmExporter.exportSingleFrameToFile((FrmHeader) frameSelector.getHeader(), frameSelector.getDirection(), 
+								indexForDirection, file.toString(), frameSelector.isHasBackground());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -278,8 +282,8 @@ public class MainFrame extends Application {
 	}
 
 	private void setDefaultFileList() {
-		fileSelector.setCurrentFolder("f:/Code/FOnline/Fallout_Dat/art/critters");
-		fileSelector.setCurrentExportFolder("f:/Code/FOnline/Fallout_Dat/art/critters");
+		fileSelector.setCurrentFolder("e:/Coding/FOnline/Extracts/fallout.dat/art/critters");
+		fileSelector.setCurrentExportFolder("e:/Coding/FOnline/Exports");
 	}
 
 	private void addFileSelectButton(Stage primaryStage) {

@@ -8,7 +8,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import javafx.scene.image.Image;
+import net.fodev.tools.frm.model.ColorCycleOffset;
 import net.fodev.tools.frm.model.FoPalette;
+import net.fodev.tools.frm.model.FrmFrame;
 import net.fodev.tools.frm.model.Header;
 
 public class FrmExporter {
@@ -21,6 +23,35 @@ public class FrmExporter {
 			return;
 		}
 	}
+	
+	public static void exportSingleColorCycleFrameToFile(Header header, int direction, int frameIndex, String filename, ColorCycleOffset cco, boolean hasBackground) throws IOException {
+        try {            
+            FrmFrame frame = (FrmFrame) header.getFrame(0);
+            
+            byte[] image = FrmImageConverter.getSingleColorCycledImage(frame.getData(), frame.getWidth(),
+                    frame.getHeight(), 0, cco, hasBackground);
+            FrmImageConverter.writeCycledImageToFile(image, filename);
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return;
+        }
+    }
+    
+    public static void exportColorCycleAnimationToFile(Header header, String folderName, String frameFileName, boolean hasBackground) throws IOException {
+        String newFolderName = folderName + "/" + frameFileName;
+        new File(newFolderName).mkdirs();
+        ColorCycleOffset cco = new ColorCycleOffset();
+         
+        //TODO: Check if Color Cycled Images always only have one direction.
+        for (int direction = 0; direction < 1; direction++) {
+          //TODO: Check whether Color Cycled imaged always only have 5 frames or not.
+            for (int index = 0; index < 5; index++) {
+                exportSingleColorCycleFrameToFile(header, direction, index, newFolderName + "/" + frameFileName + "_" + index + ".png", cco, hasBackground);
+                cco.step();
+            }
+        }
+    }
 
 	public static void exportAnimationToFile(Header header, String folderName, String frameFileName, boolean hasBackground) throws IOException {
 		String newFolderName = folderName + "/" + frameFileName;

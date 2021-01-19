@@ -19,6 +19,7 @@ import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -56,6 +57,29 @@ public class FrmImageConverter {
 		return new javafx.scene.image.Image(in);
 
 	}
+	
+	//for export
+    public static byte[] getSingleColorCycledImage(byte[] rawPixels, int width, int height, 
+            int offset, ColorCycleOffset colorCycleOffset, boolean hasBackground) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        try {
+            ImageIO.write((RenderedImage) createBufferedImage(rawPixels, width, height, offset, colorCycleOffset, hasBackground), "png", out);
+            out.flush();
+        } catch (IOException ex) {            
+            ex.printStackTrace();
+        }
+        byte[] result = out.toByteArray();
+        out.close();
+        return result;      
+    }
+    
+    public static void writeCycledImageToFile(byte[] image, String filename) throws IOException {       
+        //System.out.println("file: " + filename);
+        FileOutputStream outputF = new FileOutputStream(new File(filename));
+        outputF.write(image);
+        outputF.close();
+    }
 
 	static BufferedImage createBufferedImage(byte[] pixels, int width, int height, int offset, ColorCycleOffset cco, boolean hasBackground) {
 		SampleModel sm = getIndexSampleModel(width, height, cco, hasBackground);

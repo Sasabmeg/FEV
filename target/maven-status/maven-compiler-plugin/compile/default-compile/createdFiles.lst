@@ -20,6 +20,7 @@ net\fodev\tools\frm\view\MainFrame$19.class
 net\fodev\tools\frm\model\ColorCycleOffset.class
 net\fodev\tools\frm\view\MainFrame$1.class
 net\fodev\tools\frm\control\FrmExporter.class
+net\fodev\tools\frm\GuiStarter.class
 net\fodev\tools\frm\view\BorderedTitledPane.class
 net\fodev\tools\frm\view\MainFrame$6.class
 net\fodev\tools\frm\model\Header.class

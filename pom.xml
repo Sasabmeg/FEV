@@ -55,7 +55,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.fodev.tools.frm.view.MainFrame</mainClass>
+                            <mainClass>net.fodev.tools.frm.GuiStarter</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

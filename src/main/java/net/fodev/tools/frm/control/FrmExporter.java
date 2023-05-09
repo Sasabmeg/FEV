@@ -25,6 +25,7 @@ public class FrmExporter {
 	public static void exportAnimationToFile(Header header, String folderName, String frameFileName, boolean hasBackground) throws IOException {
 		String newFolderName = folderName + "/" + frameFileName;
 		new File(newFolderName).mkdirs();
+		System.out.println("Exporting animation: " + newFolderName);
 		for (int direction = 0; direction < header.getTotalFrames() / header.getFramesPerDirection(); direction++) {
 			for (int index = 0; index < header.getFramesPerDirection(); index++) {
 				exportSingleFrameToFile(header, direction, index, newFolderName + "/" + direction + "_" + index + ".png", hasBackground);

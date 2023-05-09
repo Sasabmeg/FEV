@@ -31,7 +31,7 @@ import net.fodev.tools.frm.model.FoPalette;
 public class FrmImageConverter {
 	public static Image getJavaFXImage(byte[] rawPixels, int width, int height, int offset, boolean hasBackground) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		System.out.println(String.format("rawPixels lenght = %d, width = %d, height = %d, offset = %d", 
+		System.out.println(String.format("rawPixels length = %d, width = %d, height = %d, offset = %d",
 				rawPixels.length, width, height, offset));
 		try {
 			BufferedImage bufferedImage = createBufferedImage(rawPixels, width, height, offset, null, hasBackground);

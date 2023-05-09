@@ -1,9 +1,11 @@
 package net.fodev.tools.frm.view;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
@@ -72,6 +74,7 @@ public class MainFrame extends Application {
 	private Button selectFileButton;
 	private Button fileMaskButton;
 	private Button exportFrameButton;
+	private Button exportFolderButton;
 	private Button exportAnimationButton;
 	private Button exportPaletteButton;
 	private Label filePathLabel;
@@ -135,6 +138,7 @@ public class MainFrame extends Application {
 		GridPane.setConstraints(frameExportGroup, 1, 2, 1, 1);
 
 		addExportSingleFrameButton(primaryStage);
+		addExportFolderButton(primaryStage);
 		addExportAnimationButton(primaryStage);
 
 		exportPaletteButton = new Button("Exp palette");
@@ -175,7 +179,7 @@ public class MainFrame extends Application {
 			}
 
 		});
-		GridPane.setConstraints(exportPaletteButton, 0, 1, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(exportPaletteButton, 1, 1, 1, 1, HPos.CENTER, VPos.CENTER);
 		frameExportGrid.getChildren().add(exportPaletteButton);
 
 		root.getChildren().add(frameExportGroup);
@@ -243,7 +247,7 @@ public class MainFrame extends Application {
 					if (file != null) {
 						fileSelector.setCurrentExportFolder(file.getParent());
 						System.out.println("Setting export folder to: " + file.getParent());
-						System.out.println("Export file name: " + file.toString());
+						System.out.println("Export file name: " + file);
 						int indexForDirection = frameSelector.getCurrentFrameIndex() % frameSelector.getFramesPerDirection();
 						System.out.println("Saving: Dir = " + frameSelector.getDirection() + ", Index = " + indexForDirection);
 						FrmExporter.exportSingleFrameToFile((FrmHeader) frameSelector.getHeader(), frameSelector.getDirection(), 
@@ -256,6 +260,63 @@ public class MainFrame extends Application {
 		});
 		GridPane.setConstraints(exportFrameButton, 0, 0, 1, 1, HPos.CENTER, VPos.CENTER);
 		frameExportGrid.getChildren().add(exportFrameButton);
+	}
+
+	private void addExportFolderButton(Stage primaryStage) {
+		exportFolderButton = new Button("Exp folder");
+		exportFolderButton.setOnAction(arg0 -> {
+			DirectoryChooser directoryChooser = new DirectoryChooser();
+			if (!fileSelector.isFileListEmpty()) {
+				try {
+					Path p = Paths.get(fileSelector.getCurrentExportFolder());
+					if (Files.exists(p)) {
+						directoryChooser.setInitialDirectory(p.toFile());
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			try {
+				File folder = directoryChooser.showDialog(primaryStage);
+				if (folder != null) {
+					System.out.println("Export from:\t" + fileSelector.getCurrentFolder());
+					fileSelector.setCurrentExportFolder(folder.getAbsolutePath());
+					System.out.println("Export to:\t" + folder);
+
+					Stream.of(new File(fileSelector.getCurrentFolder()).listFiles())
+							.filter(file -> !file.isDirectory())
+							.forEach(file -> {
+								int indexForDirection = frameSelector.getCurrentFrameIndex() % frameSelector.getFramesPerDirection();
+								fileSelector.setCurrentFile(file.getName());
+								try {
+									frameSelector.readHeaderFromFile(fileSelector.getCurrentFileNameAndPath());
+								} catch (Exception e) {
+									throw new RuntimeException(e);
+								}
+								String outfile = folder + "\\" + file.getName().replaceFirst("[.][^.]+$", "") + ".png";
+								try {
+									if (frameSelector.getFramesPerDirection() == 1) {
+										FrmExporter.exportSingleFrameToFile((FrmHeader)frameSelector.getHeader(), frameSelector.getDirection(),
+												indexForDirection, outfile, frameSelector.isHasBackground());
+									} else {
+										FrmExporter.exportAnimationToFile(frameSelector.getHeader(), folder.getAbsolutePath(), file.getName(), frameSelector.isHasBackground());
+									}
+
+								} catch (IOException e) {
+									throw new RuntimeException(e);
+								}
+							});
+
+
+				} else {
+					System.out.println("Was not able to select that folder. (null)");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		GridPane.setConstraints(exportFolderButton, 0, 1, 1, 1, HPos.CENTER, VPos.CENTER);
+		frameExportGrid.getChildren().add(exportFolderButton);
 	}
 
 	private void addMousebinds() {
@@ -306,6 +367,15 @@ public class MainFrame extends Application {
 				fileChooser.getExtensionFilters().add(extFilterFofrm);
 				if (!fileSelector.isFileListEmpty()) {
 					Path p = Paths.get(fileSelector.getCurrentFolder());
+					try {
+						if (Files.exists(p)) {
+							fileChooser.setInitialDirectory(p.toFile());
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else {
+					Path p = Paths.get("e:\\Coding\\FOnline\\Extracts1\\fallout.dat\\art\\skilldex\\");
 					try {
 						if (Files.exists(p)) {
 							fileChooser.setInitialDirectory(p.toFile());
